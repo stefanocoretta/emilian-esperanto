@@ -1,0 +1,19 @@
+---
+title: "Analyses"
+author: "Stefano Coretta"
+date: "10/09/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+library(tidyverse)
+```
+
+# Read data
+
+```{r}
+emilian <- read_csv("data/raw/emilian.csv")
+```
+
