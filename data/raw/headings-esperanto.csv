@@ -1,0 +1,176 @@
+col_id,old,new
+1,Unique Response Number,id
+2,1. Gender,gender
+3,If other specify,gender_other
+4,Age,age
+5,Education,education
+6,4. Kio vi estas? (via okupo),profession_eo
+7,OCCUPATION,profession
+8,5. Lando kaj urbo de naskiĝo,birth_place_eo
+9,BIRTHPLACE,birth_place
+10,6. Nuna loĝloko,current_place_eo
+11,RESIDENCE,current_place
+12,6.a. Por kiom da tempo?,current_place_for
+13,7. Lingvoj parolataj en la familio,languages_family_eo
+14,FAMILY LANGUAGES,languages_family
+15,8. Lingvoj akiritaj unue & de kiu,first_langacq
+16,9. Lingvoj akiritaj poste & de kiu,later_langacq
+17,10. Lingvoj de gepatroj,languages_parents
+18,11. Ĉu vi komprenas parolatan Esperanton?,understand
+19,12. Ĉu vi parolas Esperanton?,understand_var
+20,13. Kun kiu vi parolas esperante (dum via vivo)?,Q13
+21,13.1.a. Familio - Yes aŭ No kaj ilia sekso,with_family
+22,13.1.b. Familio - Komentoj,with_family_comments
+23,13.2.a. Amikoj - Yes aŭ No kaj ilia sekso,with_friends
+24,13.2.b. Amikoj - Komentoj,with_friends_comments
+25,13.3.a. Najbaroj - Yes aŭ No kaj ilia sekso,with_neighbours
+26,13.3.b. Najbaroj - Komentoj,with_neighbours_comments
+27,"13.4.a. Samklasanoj de infaNojo, baza lerNojo, mezlerNojo, ktp - Yes aŭ No kaj ilia sekso",with_schoolmates
+28,"13.4.b. Samklasanoj de infanejo, baza lernejo, mezlernejo, ktp - Komentoj",with_schoolmates_comments
+29,"13.5.a. Instruistoj de infaNojo, baza lerNojo, mezlerNojo, ktp - Yes aŭ No kaj ilia sekso",with_teachers
+30,"13.5.b. Instruistoj de infanejo, baza lernejo, mezlernejo, ktp - Komentoj",with_teachers_comments
+31,13.6.a. Universitataj samklasanoj - Yes aŭ No kaj ilia sekso,with_unimates
+32,13.6.b. Universitataj samklasanoj - Komentoj,with_unimates_comments
+33,13.7.a. Universitato-instruistoj - Yes aŭ No kaj ilia sekso,with_uniprofs
+34,13.7.b. Universitato-instruistoj - Komentoj,with_uniprofs_comments
+35,13.8.a. Kunulo - Yes aŭ No kaj ilia sekso,with_partner
+36,13.8.b. Kunulo - Komentoj,with_partner_comments
+37,13.9.a. Konatoj - Yes aŭ No kaj ilia sekso,with_acquantainces
+38,13.9.b. Konatoj - Komentoj,with_acquantainces_comments
+39,13.10.a. Kolegoj - Yes aŭ No kaj ilia sekso,with_colleagues
+40,13.10.b. Kolegoj - Komentoj,with_colleagues_comments
+41,13.11.a. Fremduloj (esperantaj) - Yes aŭ No kaj ilia sekso,with_notknown
+42,13.11.b. Fremduloj (esperantaj) - Komentoj,with_notknown_comments
+43,13.12.a. Pastro - Yes aŭ No kaj ilia sekso,with_priest
+44,13.12.b. Pastro - Komentoj,with_priest_comments
+45,13.13.a. Kuracisto - Yes aŭ No kaj ilia sekso,with_doctor
+46,13.13.b. Kuracisto - Komentoj,with_doctor_comments
+47,13.14.a. LGBTQ+ - Yes aŭ No kaj ilia sekso,with_others
+48,13.14.b. Alia - Komentoj,with_others_comments
+49,14. Kie vi parolas esperante?,Q14
+50,14.1.a. Kafejo / trinkejo - Yes aŭ No,at_pub
+51,14.1.b. Kafejo / trinkejo - Komentoj,at_pub_comments
+52,14.2.a. Bazaro - Yes aŭ No,at_market
+53,14.2.b. Bazaro - Komentoj,at_market_comments
+54,14.3.a. Butiko (precizigu) - Yes aŭ No,at_shop
+55,14.3.b. Butiko (precizigu) - Komentoj,at_shop_comments
+56,14.4.a. LerNojo - Yes aŭ No,at_school
+57,14.4.b. Lernejo - Komentoj,at_school_comments
+58,14.5.a. Universitato - Yes aŭ No,at_uni
+59,14.5.b. Universitato - Komentoj,at_uni_comments
+60,14.6.a. Laborejo - Yes aŭ No,at_work
+61,14.6.b. Laborejo - Komentoj,at_work_comments
+62,14.7.a. Preĝejo - Yes aŭ No,at_church
+63,14.7.b. Preĝejo - Komentoj,at_church_comments
+64,14.8.a. Publikaj oficeoj - Yes aŭ No,in_publicbuilds
+65,14.8.b. Publikaj oficeoj - Komentoj,in_publicbuilds_comments
+66,14.9.a. LGBTQ+ - Yes aŭ No,with_lagbtp
+67,14.9.b. Alia - Komentoj,in_otherplaces
+68,15. Pri kio vi parolas kiam vi parolas esperante?,Q15
+69,15.1.a. Salutojn - Yes aŭ No,greetings
+70,15.1.b. Salutojn - Komentoj,greetings_comments
+71,15.2.a. Fojaj deziroj / kondolencoj - Yes aŭ No,wishes
+72,15.2.b. Fojaj deziroj / kondolencoj - Komentoj,wishes_comments
+73,15.3.a. Mensa kalkulado - Yes aŭ No,calculations
+74,15.3.b. Mensa kalkulado - Komentoj,calculations_comments
+75,15.4.a. En la telefono - Yes aŭ No,phone
+76,15.4.b. En la telefono - Komentoj,phone_comments
+77,15.5.a. Por priparoli ĉiutagajn aferojn - Yes aŭ No,everyday
+78,15.5.b. Por priparoli ĉiutagajn aferojn - Komentoj,everyday_comments
+79,15.6.a. Rakonti rakontojn - Yes aŭ No,stories
+80,15.6.b. Rakonti rakontojn - Komentoj,stories_comments
+81,15.7.a. Por paroli pri politiko - Yes aŭ No,politics
+82,15.7.b. Por paroli pri politiko - Komentoj,politics_comments
+83,15.8.a. Ŝerci - Yes aŭ No,jokes
+84,15.8.b. Ŝerci - Komentoj,jokes_comments
+85,15.9.a. Por esprimi koleron - Yes aŭ No,anger
+86,15.9.b. Por esprimi koleron - Komentoj,anger_comments
+87,15.10.a. Por esprimi ĝojon - Yes aŭ No,joy
+88,15.10.b. Por esprimi ĝojon - Komentoj,joy_comments
+89,15.11.a. Sakri - Yes aŭ No,swearing
+90,15.11.b. Sakri - Komentoj,swearing_comments
+91,15.12.a. Pensi - Yes aŭ No,thoughts
+92,15.12.b. Pensi - Komentoj,throughts_comments
+93,15.13.a. Preĝi - Yes aŭ No,prayers
+94,15.13.b. Preĝi - Komentoj,prayers_comments
+95,15.14.a. LGBTQ+ - Yes aŭ No,about_lgbtqp
+96,15.14.b. Alia - Komentoj,other_comments_15
+97,16. Ĉu vi uzas vortojn el Esperanto kiam vi parolas aliajn lingvojn?,eo_in_other_langs
+98,16.a. Ekzemploj,eo_in_other_langs_examples
+99,17. Ĉu vi uzas vortojn el aliaj lingvoj kiam vi parolas Esperanton?,other_langs_in_eo
+100,17.a. Kiuj lingvoj?,other_in_eo_langs
+101,17.b. Ekzemploj,other_langs_in_eo_examples
+102,18. Ĉu vi legas kaj skribas en Esperanto?,read_write
+103,19. Kia teksto?,Q19
+104,19.1.a. Romanoj / rakontoj - Mi legas,literature_read
+105,19.1.b. Romanoj / rakontoj - Mi skribas,literature_write
+106,19.1.c. Romanoj / rakontoj - Komentoj,literature_comments
+107,19.2.a. Gazetoj (precizigu) - Mi legas,newspapers_read
+108,19.2.b. Gazetoj (precizigu) - Mi skribas,newspapers_write
+109,19.2.c. Gazetoj (precizigu) - Komentoj,newspapers_comments
+110,19.3.a. LerNoja materialo (precizigu) - Mi legas,teaching_read
+111,19.3.b. LerNoja materialo (precizigu) - Mi skribas,teaching_write
+112,19.3.c. Lerneja materialo (precizigu) - Komentoj,teaching_comments
+113,19.4.a. Prospektoj/flugfolioj - Mi legas,flyers_read
+114,19.4.b. Prospektoj/flugfolioj - Mi skribas,flyers_write
+115,19.4.c. Prospektoj/flugfolioj - Komentoj,flyers_comments
+116,19.5.a. Aliaj reklamaj materialoj (precizigu) - Mi legas,other_promo_read
+117,19.5.b. Aliaj reklamaj materialoj (precizigu) - Mi skribas,other_promo_write
+118,19.5.c. Aliaj reklamaj materialoj (precizigu) - Komentoj,other_promo_comments
+119,19.6.a. Aliaj presitaj materialoj (precizigu) - Mi legas,other_print_read
+120,19.6.b. Aliaj presitaj materialoj (precizigu) - Mi skribas,other_print_write
+121,19.6.c. Aliaj presitaj materialoj (precizigu) - Komentoj,other_print_comments
+122,19.7.a. Tekstmesaĝado - Mi legas,texts_read
+123,19.7.b. Tekstmesaĝado - Mi skribas,texts_write
+124,19.7.c. Tekstmesaĝado - Komentoj,texts_comments
+125,19.8.a. Retpoŝto - Mi legas,email_read
+126,19.8.b. Retpoŝto - Mi skribas,email_write
+127,19.8.c. Retpoŝto - Komentoj,email_comments
+128,19.9.a. Facebook - Mi legas,facebook_read
+129,19.9.b. Facebook - Mi skribas,facebook_write
+130,19.9.c. Facebook - Komentoj,facebook_comments
+131,19.10.a. WhatsApp - Mi legas,whatsapp_read
+132,19.10.b. WhatsApp - Mi skribas,whatsapp_write
+133,19.10.c. WhatsApp - Komentoj,whatsapp_comments
+134,19.11.a. Sociaj amaskomunikiloj - Mi legas,socialmedia_read
+135,19.11.b. Sociaj amaskomunikiloj - Mi skribas,socialmedia_write
+136,19.11.c. Sociaj amaskomunikiloj - Komentoj,socialmedia_comments
+137,19.12.a. Alia - Mi legas,other_read
+138,19.12.b. Alia - Mi skribas,other_write
+139,19.12.c. Alia - Komentoj,other_comments_21
+140,"20. TV, radioprogramoj kaj interreto en Esperanto",Q20
+141,20.1.a. Televidaj programoj (precizigu kia) - Kiom ofte?,watch_TV_how_often
+142,20.1.b. Televidaj programoj (precizigu kia) - Komentoj,watch_TV_what
+143,20.2.a. Radioprogramoj (precizigu kia) - Kiom ofte?,radio_how_often
+144,20.2.b. Radioprogramoj (precizigu kia) - Komentoj,radio_what
+145,20.3.a. Interreto (precizigu kia) - Kiom ofte?,listen_watch_online_how_often
+146,20.3.b. Interreto (precizigu kia) - Komentoj,listen_watch_online_what
+147,21. Ĉu vi ŝatas paroli Esperanton? Kial?,like_speaking_esperanto_eo
+148,Likes speaking Esperanto,like_speaking_esperanto
+149,Why dis-likes,why_dis_likes_esperanto
+150,"22. Se vi havas/havos infanojn, kian lingvon/jn vi parolus al ili?",would_teach_children_eo
+151,Teach children,would_teach_children
+152,"23. Ĉu vi pensas, ke oni devus konservi Esperanton? Kial?",should_be_maintained_eo
+153,Should be maintained,should_be_maintained
+154,"24. Kion devus farigi por konservi Esperanton, kaj kiu devus fari ĝin?",what_should_be_done
+155,25. Kie kaj kiam oni devus uzi Esperanton? Kial?,where_when_speak_emilian
+156,"26. Ĉu vi pensas, ke Esperanto devus esti studata en lernejoj / universitatoj? Kial?",taught_at_school_eo
+157,Teach at school,taught_at_school
+158,"27. Ĉu vi pensas, ke Esperanto devus esti uzata kiel instrua lingvo en lernejoj / universitatoj? Kial?",used_to_teach_eo
+159,Teach in Esperanto,used_to_teach
+160,"28. Kiel vi difinus vin rilate al identeco? (Ekz .: esperantisto, eŭropano, ktp ...)",identity
+161,29. Kion signifas esti esperantisto?,esperantisto
+162,30. Kioj estas la komunaj valoroj de la Esperanto-komunumo?,common_values
+163,"31. Al kiuj aliaj komunumoj vi apartenas? Ekzemple: vegano, ekologiisto ktp",other_communities
+164,"32. Kiel vi instinkte konsideras homon, kiu parolas Esperanton?: Indiku por ĉiu ero en la tabelo (a-h) unu el la kvin opcioj depende de kiom vi konsentas atribui unu el la du adjektivoj ĉe la fino de la tablo al parolanta Esperanton. Se vi ne havas fortajn opiniojn pri la markita trajto, signalu opcion 3, kiu signifas ""por mi ĝi estas indiferenta"". Memoru, ke la taksadoj donitaj devas esti nur impresoj pri homo, kiu parolas Esperanton kaj tial instinkte atribuita:",Q32
+165,EDUCATED,educated
+166,INTELLIGENT,intelligent
+167,DILIGENT,diligent
+168,FRIENDLY,friendly
+169,KIND,kind
+170,TRUSTWORTHY,trustworthy
+171,REFINED,refined
+172,FAMILIAR,familiar
+173,"33. Kiun vort-ordon vi kutime uzas? (Ekz .: ""subjekto, verbo, objekto"", aŭ ""objekto, subjekto, verbo"")",word_order
+174,"34. Se vi havas ekzemplojn de vortoj aŭ aliaj esprimoj, kiujn vi uzas sed ne estas vaste uzataj en la esperantista komunumo, bonvolu skribi ilin ĉi-sube",other_words
+175,"35. Kion vi opinias pri novigoj en Esperanto? Ĉu vi emas uzi ilin tuj, aŭ ĉu vi preferas agordi kun pli malnovaj manieroj?",new_learners

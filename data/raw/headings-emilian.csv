@@ -1,0 +1,194 @@
+col_id,old,new
+1,Unique Response Number,id
+2,1. Sesso,gender
+3,"1.a. Se selezionate ALTRO , prego di specificare",gender_other
+4,2. Etá,age
+5,3. Livello di istruzione piú alta,education
+6,4. Occupazione,profession_it
+7,Occupation,profession
+8,5. Luogo di nascita,birth_place_it
+9,Birthplace,birth_place
+10,6. Luogo di residenza,current_place_it
+11,Residence,current_place
+12,6.a. Per quanto tempo,current_place_for
+13,7. Pendolare?,commuter
+14,"7.a. Se sí, specificare la tratta",commuter_line
+15,8. Lingue parlate in famiglia,languages_family_it
+16,Family languages,languages_family
+17,"9. Lingue acquisite per prima e da chi (es: madre, padre, nonna, etc)",first_langacq
+18,10. Lingue acquisite piú tardi e da chi,later_langacq
+19,11. Lingue dei genitori,languages_parents_it
+20,Parents languages,languages_parents
+21,12. Capisce l'emiliano parlato?,understand
+22,12.a. Quale varietá?,understand_var
+23,13. Parla emiliano?,speak
+24,13.a. Quale varietá?,speak_var
+25,14. Con chi? Risponda solo se ha detto di saper parlare emiliano,Q14
+26,14.1.a. Familiari - Selezioni Sí o No per ogni opzione e indichi sesso,with_family
+27,14.1.b. Familiari - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_family_comments
+28,14.2.a. Amici - Selezioni Sí o No per ogni opzione e indichi sesso,with_friends
+29,14.2.b. Amici - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_friends_comments
+30,14.3.a. Vicini - Selezioni Sí o No per ogni opzione e indichi sesso,with_neighbours
+31,14.3.b. Vicini - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_neighbours_comments
+32,"14.4.a. Compagni di asilo, primaria, medie, superiori - Selezioni Sí o No per ogni opzione e indichi sesso",with_schoolmates
+33,"14.4.b. Compagni di asilo, primaria, medie, superiori - Usi questo spazio nel caso voglia aggiungere ulteriori commenti",with_schoolmates_comments
+34,"14.5.a. Insegnanti di asilo, primaria, medie, superiori - Selezioni Sí o No per ogni opzione e indichi sesso",with_teachers
+35,"14.5.b. Insegnanti di asilo, primaria, medie, superiori - Usi questo spazio nel caso voglia aggiungere ulteriori commenti",with_teachers_comments
+36,14.6.a. Compagni di universitá - Selezioni Sí o No per ogni opzione e indichi sesso,with_unimates
+37,14.6.b. Compagni di universitá - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_unimates_comments
+38,14.7.a. Docenti universitari - Selezioni Sí o No per ogni opzione e indichi sesso,with_uniprofs
+39,14.7.b. Docenti universitari - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_uniprofs_comments
+40,14.8.a. Proprio/a compagno/a - Selezioni Sí o No per ogni opzione e indichi sesso,with_partner
+41,14.8.b. Proprio/a compagno/a - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_partner_comments
+42,14.9.a. Conoscenze - Selezioni Sí o No per ogni opzione e indichi sesso,with_acquantainces
+43,14.9.b. Conoscenze - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_acquantainces_comments
+44,14.10.a. Colleghi - Selezioni Sí o No per ogni opzione e indichi sesso,with_colleagues
+45,14.10.b. Colleghi - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_colleagues_comments
+46,14.11.a. Sconosciuti (emiliani) - Selezioni Sí o No per ogni opzione e indichi sesso,with_notknown
+47,14.11.b. Sconosciuti (emiliani) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_notknown_comments
+48,14.12.a. Prete - Selezioni Sí o No per ogni opzione e indichi sesso,with_priest
+49,14.12.b. Prete - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_priest_comments
+50,14.13.a. Dottore - Selezioni Sí o No per ogni opzione e indichi sesso,with_doctor
+51,14.13.b. Dottore - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_doctor_comments
+52,14.14.a. Altri - Selezioni Sí o No per ogni opzione e indichi sesso,with_others
+53,14.14.b. Altri - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,with_others_comments
+54,15. Dove? Risponda solo se ha detto di saper parlare emiliano,Q15
+55,15.1.a. Bar - Selezioni Sí o No per ogni opzione,at_pub
+56,15.1.b. Bar - Usi questo spazio se vuole aggiungere ulteriori commenti,at_pub_comments
+57,15.2.a. Mercato - Selezioni Sí o No per ogni opzione,at_market
+58,15.2.b. Mercato - Usi questo spazio se vuole aggiungere ulteriori commenti,at_market_comments
+59,15.3.a. Negozio (quale?) - Selezioni Sí o No per ogni opzione,at_shop
+60,15.3.b. Negozio (quale?) - Usi questo spazio se vuole aggiungere ulteriori commenti,at_shop_comments
+61,15.4.a. Scuola - Selezioni Sí o No per ogni opzione,at_school
+62,15.4.b. Scuola - Usi questo spazio se vuole aggiungere ulteriori commenti,at_school_comments
+63,15.5.a. Universitá - Selezioni Sí o No per ogni opzione,at_uni
+64,15.5.b. Universitá - Usi questo spazio se vuole aggiungere ulteriori commenti,at_uni_comments
+65,15.6.a. Lavoro - Selezioni Sí o No per ogni opzione,at_work
+66,15.6.b. Lavoro - Usi questo spazio se vuole aggiungere ulteriori commenti,at_work_comments
+67,15.7.a. Chiesa - Selezioni Sí o No per ogni opzione,at_church
+68,15.7.b. Chiesa - Usi questo spazio se vuole aggiungere ulteriori commenti,at_church_comments
+69,15.8.a. Uffici pubblici - Selezioni Sí o No per ogni opzione,in_publicbuilds
+70,15.8.b. Uffici pubblici - Usi questo spazio se vuole aggiungere ulteriori commenti,in_publicbuilds_comments
+71,15.9.a. Altro - Selezioni Sí o No per ogni opzione,in_otherplaces
+72,15.9.b. Altro - Usi questo spazio se vuole aggiungere ulteriori commenti,in_otherplaces_comments
+73,"16. Quando parla emiliano, di che cosa parla? Risponda solo se ha detto di saper parlare emiliano",Q16
+74,16.1.a. Saluti - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,greetings
+75,16.1.b. Saluti - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,greetings_comments
+76,16.2.a. Auguri/condoglianze - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,wishes
+77,16.2.b. Auguri/condoglianze - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,wishes_comments
+78,16.3.a. Calcoli (mentali) - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,calculations
+79,16.3.b. Calcoli (mentali) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,calculations_comments
+80,16.4.a. Al telefono - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,phone
+81,16.4.b. Al telefono - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,phone_comments
+82,16.5.a. Per parlare di fatti quotidiani - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,everyday
+83,16.5.b. Per parlare di fatti quotidiani - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,everyday_comments
+84,16.6.a. Per raccontare storie - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,stories
+85,16.6.b. Per raccontare storie - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,stories_comments
+86,16.7.a. Per parlare di politica - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,politics
+87,16.7.b. Per parlare di politica - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,politics_comments
+88,16.8.a. Per scherzare - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,jokes
+89,16.8.b. Per scherzare - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,jokes_comments
+90,16.9.a. Per esprimere rabbia - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,anger
+91,16.9.b. Per esprimere rabbia - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,anger_comments
+92,16.10.a. Per esprimere gioia - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,joy
+93,16.10.b. Per esprimere gioia - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,joy_comments
+94,16.11.a. Per dire parolacce - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,swearing
+95,16.11.b. Per dire parolacce - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,swearing_comments
+96,16.12.a. Per pensare - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,thoughts
+97,16.12.b. Per pensare - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,throughts_comments
+98,16.13.a. Per pregare - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,prayers
+99,16.13.b. Per pregare - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,prayers_comments
+100,16.14.a. Altro - Selezioni Sí o No a seconda se parla emiliano per queste tematiche,other
+101,16.14.b. Altro - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,other_comments_16
+102,17. Usa parole italiane quando parla emiliano? Risponda solo se ha detto di saper parlare emiliano,italian_in_emilian
+103,17.a. Esempi,italian_in_emilian_examples
+104,18. Usa parole emiliane quando parla italiano?,emilian_in_italian
+105,18.a. Esempi,emilian_in_italian_examples
+106,19. Usa parole di altre lingue quando parla italiano?,other_in_italian
+107,19.a. Quali lingue?,other_in_italian_langs
+108,19.b. Esempi,other_in_italian_examples
+109,20. Legge e scrive in emiliano?,read_write
+110,20.a. Quale varietá?,read_write_vars
+111,21. Che tipo di testi? Risponda solo se ha detto di leggere e scrivere in emiliano,Q21
+112,21.1.a. Romanzi/storie/poesie - Leggo,literature_read
+113,21.1.b. Romanzi/storie/poesie - Scrivo,literature_write
+114,21.1.c. Romanzi/storie/poesie - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,literature_comments
+115,21.2.a. Quotidiani e altra stampa (specifichi) - Leggo,newspapers_read
+116,21.2.b. Quotidiani e altra stampa (specifichi) - Scrivo,newspapers_write
+117,21.2.c. Quotidiani e altra stampa (specifichi) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,newspapers_comments
+118,21.3.a. Materiali didattici (specifichi) - Leggo,teaching_read
+119,21.3.b. Materiali didattici (specifichi) - Scrivo,teaching_write
+120,21.3.c. Materiali didattici (specifichi) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,teaching_comments
+121,21.4.a. Depliants - Leggo,flyers_read
+122,21.4.b. Depliants - Scrivo,flyers_write
+123,21.4.c. Depliants - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,flyers_comments
+124,21.5.a. Altri materiali promozionali (specifichi) - Leggo,other_promo_read
+125,21.5.b. Altri materiali promozionali (specifichi) - Scrivo,other_promo_write
+126,21.5.c. Altri materiali promozionali (specifichi) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,other_promo_comments
+127,21.6.a. Altri materiali di stampa (specifichi) - Leggo,other_print_read
+128,21.6.b. Altri materiali di stampa (specifichi) - Scrivo,other_print_write
+129,21.6.c. Altri materiali di stampa (specifichi) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,other_print_comments
+130,21.7.a. Messaggi sul cellulare - Leggo,texts_read
+131,21.7.b. Messaggi sul cellulare - Scrivo,texts_write
+132,21.7.c. Messaggi sul cellulare - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,texts_comments
+133,21.8.a. E-mail - Leggo,email_read
+134,21.8.b. E-mail - Scrivo,email_write
+135,21.8.c. E-mail - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,email_comments
+136,21.9.a. Facebook - Leggo,facebook_read
+137,21.9.b. Facebook - Scrivo,facebook_write
+138,21.9.c. Facebook - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,facebook_comments
+139,21.10.a. WhatsApp - Leggo,whatsapp_read
+140,21.10.b. WhatsApp - Scrivo,whatsapp_write
+141,21.10.c. WhatsApp - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,whatsapp_comments
+142,21.11.a. Social media (specifichi) - Leggo,socialmedia_read
+143,21.11.b. Social media (specifichi) - Scrivo,socialmedia_write
+144,21.11.c. Social media (specifichi) - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,socialmedia_comments
+145,21.12.a. Altri - Leggo,other_read
+146,21.12.b. Altri - Scrivo,other_write
+147,21.12.c. Altri - Usi questo spazio nel caso voglia aggiungere ulteriori commenti,other_comments_21
+148,22. Programmi TV/Radio in emiliano e uso dell'emiliano su internet,Q22
+149,22.1.a. Guardo programmi TV in emiliano - Quanto spesso?,watch_TV_how_often
+150,"22.1.b. Guardo programmi TV in emiliano - Specifichi cosa (quali siti, quali programmi, etc)",watch_TV_what
+151,22.2.a. Ascolto programmi radio in emiliano - Quanto spesso?,radio_how_often
+152,"22.2.b. Ascolto programmi radio in emiliano - Specifichi cosa (quali siti, quali programmi, etc)",radio_what
+153,22.3.a. Ascolto/Scrivo in emiliano su internet - Quanto spesso?,listen_watch_online_how_often
+154,"22.3.b. Ascolto/Scrivo in emiliano su internet - Specifichi cosa (quali siti, quali programmi, etc)",listen_watch_online_what
+155,"23. Le piace parlare emiliano? Se non lo parla, le piacerebbe poterlo parlare? Perché?",like_speaking_emilian_it
+156,Like speaking,like_speaking_emilian
+157,Why would speak,why_speaking_emilian
+158,"24. Se ha/avesse figli, in quali lingue parlerebbe con loro? Perché?",woud_teach_children_it
+159,Teach children,woud_teach_children
+160,25. Pensa che l’emiliano dovrebbe essere mantenuto? Perché?,should_be_maintained_it
+161,Maintain Emilian,should_be_maintained
+162,"26. Cosa dovrebbe essere fatto per preservare e mantenere l’emiliano, e chi dovrebbe farlo?",what_should_be_done
+163,27. Dove e quando si dovrebbe usare l’emiliano? Perché?,where_when_speak_emilian
+164,28. Pensa che l’emiliano dovrebbe essere studiato a scuola/universitá? Perché?,taught_at_school_it
+165,Teach at school,taught_at_school
+166,29. Quale varietá di emiliano andrebbe insegnata? Perché?,taught_at_school_variety
+167,30. Pensa che si dovrebbe usare l’emiliano come lingua dell’istruzione nelle scuole e universitá? Perché?,used_to_teach_it
+168,Use Emilian in school,used_to_teach
+169,31. Quale varietá di emiliano le piacerebbe venisse usata? Perché?,used_to_teach_variety
+170,"32. Studi recenti dimostrano che crescere parlando due o piú lingue porta vantaggi quali maggior concentrazione, miglior attenzione, memoria, e creativitá. Sapere questo la fa riconsiderare il valore dell'emiliano e il suo ruolo nella crescita di un bambino? Perché?",reconsider_value_it
+171,Reconsider value,reconsider_value_it
+172,"33. Come si definirebbe in termini di identiá? (Es: italiano, emiliano, europeo, etc…)",identity
+173,34. Che cosa vuole dire secondo Lei essere montanaro/a?,montanaro_it
+174,Montanaro,montanaro
+175,35. Che cosa vuole dire seondo Lei essere un cittadino/pianeggiante?,pianeggiante_it
+176,Pianeggiante,pianeggiante
+177,"36. Come reputa d’istinto una persona che parla emiliano?: Indichi per ogni voce della tabella (a. - h.) una delle cinque opzioni a seconda di quanto lei sia d'accordo nell'attribuire uno dei due aggettivi all'estremità della tabella ad un emiliano parlante. Se non ha forti opinioni in merito alla caratteristica indicata segnali l'opzione 3 che significa ""per me è indifferente"". Si ricordi che le valutazioni date devono essere sole impressioni su una persona che parla emiliano e quindi attribuite d'istinto: (Es. Voce a. dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita)",Q36
+178,"36.1.a. a. Istruita - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",educated
+179,"36.2.a. b. Intelligente - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",intelligent
+180,"36.3.a. c. Diligente - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",diligent
+181,"36.4.a. d. Amichevole - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",friendly
+182,"36.5.a. e. Gentile - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",kind
+183,"36.6.a. f. Affidabile - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",trustworthy
+184,"36.7.a. g. Raffinata - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",refined
+185,"36.8.a. h. Familiare - 1 indica un giudizio piú favorevole, 3 un giudizio neutro, 5 un giudizio negativo. Esempio: dia 1 se la reputa istruita, 2 se abbastanza istruita, 3 se indifferente, 4 se poco istruita, 5 se non istruita",familiar
+186,37. Come direbbe “il letto” nel suo emiliano?,bed
+187,38. Come direbbe “il sole” nel suo emiliano?,sun
+188,39. Come direbbe “il mento” nel suo emiliano?,chin
+189,"40. Traduca ""Non se ne sono nemmeno accorti"" nel suo emiliano",they_didnt_even_realise
+190,41. Traduca “Sono arrivati molti studenti ieri” nel suo emiliano,there_arrived_many_students_yesterday
+191,42. Traduca “Il pattume é accanto alla porta” nel suo emiliano,the_rubbish_is_next_to_the_door
+192,43. Traduca “Non ci sono piú le bacinelle sulla tavola” nel suo emiliano,there_are_no_more_bowls_on_the_table
+193,44. Traduca “Mi ha graffiato il gatto” e “Mi ha graffiato la gatta” nel suo emiliano,the_cat-MF_scratched_me

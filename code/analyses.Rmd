@@ -9,11 +9,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
+theme_set(theme_minimal())
 ```
 
 # Read data
 
+```{r data}
+headings_em <- read_csv("data/raw/headings-emilian.csv")
+headings_eo <- read_csv("data/raw/headings-esperanto.csv")
+
+emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new)
+esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new)
+```
+
+# Descriptive
+
+## Emilian
+
 ```{r}
-emilian <- read_csv("data/raw/emilian.csv")
+emilian %>%
+  ggplot(aes(gender)) +
+  geom_bar()
 ```
 
