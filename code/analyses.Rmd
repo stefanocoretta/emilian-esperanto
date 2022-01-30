@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
-theme_set(theme_minimal())
+theme_set(theme_light())
 ```
 
 # Read data
@@ -19,16 +19,85 @@ headings_em <- read_csv("data/raw/headings-emilian.csv")
 headings_eo <- read_csv("data/raw/headings-esperanto.csv")
 
 emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new)
-esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new)
+esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new) %>%
+  mutate(
+    age = str_remove(age, "jaroj"),
+    age = as.numeric(age)
+  )
 ```
 
 # Descriptive
 
 ## Emilian
 
-```{r}
+```{r em-gender}
 emilian %>%
   ggplot(aes(gender)) +
   geom_bar()
 ```
 
+```{r em-age}
+emilian %>%
+  ggplot(aes(age)) +
+  geom_histogram()
+
+emilian %>%
+  ggplot(aes(age)) +
+  geom_density()
+```
+
+```{r em-education}
+emilian %>%
+  ggplot(aes(education)) +
+  geom_bar()
+```
+
+```{r em-age-edu}
+emilian %>%
+  ggplot(aes(age, education)) +
+  geom_jitter(height = 0.2, alpha = 0.5)
+```
+
+```{r em-occupation}
+emilian %>%
+  count(profession) %>%
+  ggplot(aes(reorder(profession, -n), n)) +
+  geom_bar(stat = "identity")
+```
+
+## Esperanto
+
+```{r eo-gender}
+esperanto %>%
+  ggplot(aes(gender)) +
+  geom_bar()
+```
+
+```{r eo-age}
+esperanto %>%
+  ggplot(aes(age)) +
+  geom_histogram()
+
+esperanto %>%
+  ggplot(aes(age)) +
+  geom_density()
+```
+
+```{r eo-education}
+esperanto %>%
+  ggplot(aes(education)) +
+  geom_bar()
+```
+
+```{r eo-age-edu}
+esperanto %>%
+  ggplot(aes(age, education)) +
+  geom_jitter(height = 0.2, alpha = 0.5)
+```
+
+```{r eo-occupation}
+esperanto %>%
+  count(profession) %>%
+  ggplot(aes(reorder(profession, -n), n)) +
+  geom_bar(stat = "identity")
+```
