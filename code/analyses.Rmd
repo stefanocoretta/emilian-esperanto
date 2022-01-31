@@ -18,12 +18,19 @@ theme_set(theme_light())
 headings_em <- read_csv("data/raw/headings-emilian.csv")
 headings_eo <- read_csv("data/raw/headings-esperanto.csv")
 
-emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA"))
+emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA")) %>%
+  mutate(
+    understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
+  )
+
 esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA")) %>%
   mutate(
     age = str_remove(age, "jaroj"),
     age = str_replace(age, "naskiĝis en la 1995a", "25"),
-    age = as.numeric(age)
+    age = as.numeric(age),
+    understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
   )
 ```
 
@@ -66,6 +73,33 @@ emilian %>%
   geom_bar(stat = "identity")
 ```
 
+```{r}
+emilian %>%
+  ggplot(aes(understand, fill = understand)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div")
+```
+
+```{r}
+emilian %>%
+  ggplot(aes(speak, fill = speak)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div")
+```
+
+```{r}
+emilian %>%
+  select(educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
+  ggplot(aes(as.factor(rating), fill = as.factor(rating))) +
+  geom_bar() +
+  scale_fill_brewer() +
+  facet_grid(. ~ feature)
+```
+
+
+
+
 ## Esperanto
 
 ```{r eo-gender}
@@ -102,3 +136,34 @@ esperanto %>%
   ggplot(aes(reorder(profession, -n), n)) +
   geom_bar(stat = "identity")
 ```
+
+
+
+```{r}
+esperanto %>%
+  ggplot(aes(understand, fill = understand)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div")
+```
+
+
+
+```{r}
+esperanto %>%
+  ggplot(aes(speak, fill = speak)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div")
+```
+
+
+```{r}
+esperanto %>%
+  select(educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
+  drop_na() %>%
+  ggplot(aes(as.factor(rating), fill = as.factor(rating))) +
+  geom_bar() +
+  scale_fill_brewer() +
+  facet_grid(. ~ feature)
+```
+
