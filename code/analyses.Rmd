@@ -18,10 +18,11 @@ theme_set(theme_light())
 headings_em <- read_csv("data/raw/headings-emilian.csv")
 headings_eo <- read_csv("data/raw/headings-esperanto.csv")
 
-emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new)
-esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new) %>%
+emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA"))
+esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA")) %>%
   mutate(
     age = str_remove(age, "jaroj"),
+    age = str_replace(age, "naskiĝis en la 1995a", "25"),
     age = as.numeric(age)
   )
 ```
