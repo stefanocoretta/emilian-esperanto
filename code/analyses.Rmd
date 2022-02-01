@@ -38,6 +38,8 @@ esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = head
 
 ## Emilian
 
+### Participants
+
 ```{r em-gender}
 emilian %>%
   ggplot(aes(gender)) +
@@ -73,21 +75,47 @@ emilian %>%
   geom_bar(stat = "identity")
 ```
 
-```{r}
+### Language
+
+```{r em-understand}
 emilian %>%
   ggplot(aes(understand, fill = understand)) +
   geom_bar() +
   scale_fill_brewer(type = "div")
 ```
 
-```{r}
+```{r em-understand-gender}
+emilian %>%
+  ggplot(aes(understand, fill = gender)) +
+  geom_bar()
+```
+
+```{r em-speak}
 emilian %>%
   ggplot(aes(speak, fill = speak)) +
   geom_bar() +
   scale_fill_brewer(type = "div")
 ```
 
-```{r}
+```{r em-speak-gender}
+emilian %>%
+  ggplot(aes(speak, fill = gender)) +
+  geom_bar()
+```
+
+```{r em-read-write}
+emilian %>%
+  ggplot(aes(read_write, fill = read_write)) +
+  geom_bar()
+```
+
+```{r em-read-write-gender}
+emilian %>%
+  ggplot(aes(read_write, fill = gender)) +
+  geom_bar()
+```
+
+```{r em-attitude}
 emilian %>%
   select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
@@ -98,9 +126,9 @@ emilian %>%
 ```
 
 
-
-
 ## Esperanto
+
+### Participants
 
 ```{r eo-gender}
 esperanto %>%
@@ -137,18 +165,22 @@ esperanto %>%
   geom_bar(stat = "identity")
 ```
 
+### Language
 
-
-```{r}
+```{r eo-understand}
 esperanto %>%
   ggplot(aes(understand, fill = understand)) +
   geom_bar() +
   scale_fill_brewer(type = "div")
 ```
 
+```{r eo-understand-gender}
+esperanto %>%
+  ggplot(aes(understand, fill = gender)) +
+  geom_bar()
+```
 
-
-```{r}
+```{r eo-speak}
 esperanto %>%
   ggplot(aes(speak, fill = speak)) +
   geom_bar() +
@@ -156,7 +188,19 @@ esperanto %>%
 ```
 
 
-```{r}
+```{r eo-speak-gender}
+esperanto %>%
+  ggplot(aes(speak, fill = gender)) +
+  geom_bar()
+```
+
+```{r em-read-write}
+esperanto %>%
+  ggplot(aes(read_write, fill = read_write)) +
+  geom_bar()
+```
+
+```{r eo-attitude}
 esperanto %>%
   select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
