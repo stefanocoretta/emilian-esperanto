@@ -18,13 +18,13 @@ theme_set(theme_light())
 headings_em <- read_csv("data/raw/headings-emilian.csv")
 headings_eo <- read_csv("data/raw/headings-esperanto.csv")
 
-emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA")) %>%
+emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA", "na")) %>%
   mutate(
     understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
   )
 
-esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA")) %>%
+esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA", "na")) %>%
   mutate(
     age = str_remove(age, "jaroj"),
     age = str_replace(age, "naskiĝis en la 1995a", "25"),
@@ -194,7 +194,7 @@ esperanto %>%
   geom_bar()
 ```
 
-```{r em-read-write}
+```{r eo-read-write}
 esperanto %>%
   ggplot(aes(read_write, fill = read_write)) +
   geom_bar()
