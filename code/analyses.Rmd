@@ -34,11 +34,9 @@ esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = head
   )
 ```
 
-# Descriptive
+# Emilian
 
-## Emilian
-
-### Participants
+## Participants
 
 ```{r em-gender}
 emilian %>%
@@ -75,20 +73,60 @@ emilian %>%
   geom_bar(stat = "identity")
 ```
 
-### Language
+```{r em-languages-family}
+emilian %>%
+  count(languages_family) %>%
+  ggplot(aes(reorder(languages_family, -n), n)) +
+  geom_bar(stat = "identity")
+```
+
+```{r em-languages-parents}
+emilian %>%
+  count(languages_parents) %>%
+  ggplot(aes(reorder(languages_parents, -n), n)) +
+  geom_bar(stat = "identity")
+```
+
+## Language
+
+### Understand
 
 ```{r em-understand}
 emilian %>%
   ggplot(aes(understand, fill = understand)) +
   geom_bar() +
-  scale_fill_brewer(type = "div")
+  scale_fill_brewer(type = "div") +
+  theme_dark()
 ```
 
 ```{r em-understand-gender}
 emilian %>%
   ggplot(aes(understand, fill = gender)) +
   geom_bar()
+
+emilian %>%
+  ggplot(aes(understand, fill = gender)) +
+  geom_bar(position = "fill")
 ```
+
+```{r em-understand-age}
+emilian %>%
+  ggplot(aes(age, fill = understand)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(understand ~ .)
+```
+
+```{r em-understand-profession}
+emilian %>%
+  ggplot(aes(understand, fill = profession)) +
+  geom_bar()
+
+emilian %>%
+  ggplot(aes(understand, fill = profession)) +
+  geom_bar(position = "fill")
+```
+
+### Speak
 
 ```{r em-speak}
 emilian %>%
@@ -101,7 +139,32 @@ emilian %>%
 emilian %>%
   ggplot(aes(speak, fill = gender)) +
   geom_bar()
+
+emilian %>%
+  ggplot(aes(speak, fill = gender)) +
+  geom_bar(position = "fill")
 ```
+
+```{r em-speak-age}
+esperanto %>%
+  ggplot(aes(age, fill = speak)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(speak ~ .)
+```
+
+```{r em-speak-profession}
+emilian %>%
+  ggplot(aes(speak, fill = profession)) +
+  geom_bar()
+
+emilian %>%
+  ggplot(aes(speak, fill = profession)) +
+  geom_bar(position = "fill")
+```
+
+
+
+### Read and write
 
 ```{r em-read-write}
 emilian %>%
@@ -113,7 +176,34 @@ emilian %>%
 emilian %>%
   ggplot(aes(read_write, fill = gender)) +
   geom_bar()
+
+emilian %>%
+  ggplot(aes(read_write, fill = gender)) +
+  geom_bar(position = "fill")
 ```
+
+```{r em-read-write-age}
+emilian %>%
+  drop_na(read_write) %>% 
+  ggplot(aes(age, fill = read_write)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(read_write ~ .)
+```
+
+```{r em-read-write-profession}
+emilian %>%
+  ggplot(aes(read_write, fill = profession)) +
+  geom_bar()
+
+emilian %>%
+  ggplot(aes(read_write, fill = profession)) +
+  geom_bar(position = "fill")
+```
+
+
+
+
+### Attitude
 
 ```{r em-attitude}
 emilian %>%
@@ -123,12 +213,19 @@ emilian %>%
   geom_bar() +
   scale_fill_brewer() +
   facet_grid(. ~ feature)
+
+emilian %>%
+  select(educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
+  ggplot(aes(feature, fill = as.factor(rating))) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer()
 ```
 
 
-## Esperanto
+# Esperanto: Descriptive
 
-### Participants
+## Participants
 
 ```{r eo-gender}
 esperanto %>%
@@ -165,20 +262,55 @@ esperanto %>%
   geom_bar(stat = "identity")
 ```
 
-### Language
+```{r eo-languages-family}
+esperanto %>%
+  count(languages_family) %>%
+  ggplot(aes(reorder(languages_family, -n), n)) +
+  geom_bar(stat = "identity")
+```
+
+
+## Language
+
+### Understand
 
 ```{r eo-understand}
 esperanto %>%
   ggplot(aes(understand, fill = understand)) +
   geom_bar() +
-  scale_fill_brewer(type = "div")
+  scale_fill_brewer(type = "div") +
+  theme_dark()
 ```
 
 ```{r eo-understand-gender}
 esperanto %>%
   ggplot(aes(understand, fill = gender)) +
   geom_bar()
+
+esperanto %>%
+  ggplot(aes(understand, fill = gender)) +
+  geom_bar(position = "fill")
 ```
+
+```{r eo-understand-age}
+esperanto %>%
+  ggplot(aes(age, fill = understand)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(understand ~ .)
+```
+
+```{r eo-understand-profession}
+esperanto %>%
+  ggplot(aes(understand, fill = profession)) +
+  geom_bar()
+
+esperanto %>%
+  ggplot(aes(understand, fill = profession)) +
+  geom_bar(position = "fill")
+```
+
+
+### Speak
 
 ```{r eo-speak}
 esperanto %>%
@@ -192,13 +324,39 @@ esperanto %>%
 esperanto %>%
   ggplot(aes(speak, fill = gender)) +
   geom_bar()
+
+esperanto %>%
+  ggplot(aes(speak, fill = gender)) +
+  geom_bar(position = "fill")
 ```
+
+```{r eo-speak-age}
+esperanto %>%
+  ggplot(aes(age, fill = speak)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(speak ~ .)
+```
+
+```{r eo-speak-profession}
+esperanto %>%
+  ggplot(aes(speak, fill = profession)) +
+  geom_bar()
+
+esperanto %>%
+  ggplot(aes(speak, fill = profession)) +
+  geom_bar(position = "fill")
+```
+
+### Read and write
 
 ```{r eo-read-write}
 esperanto %>%
   ggplot(aes(read_write, fill = read_write)) +
   geom_bar()
 ```
+
+
+### Attitude
 
 ```{r eo-attitude}
 esperanto %>%
@@ -209,5 +367,13 @@ esperanto %>%
   geom_bar() +
   scale_fill_brewer() +
   facet_grid(. ~ feature)
+
+esperanto %>%
+  select(educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
+  drop_na() %>%
+  ggplot(aes(feature, fill = as.factor(rating))) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer()
 ```
 
