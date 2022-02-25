@@ -2,7 +2,10 @@
 title: "Analyses"
 author: "Stefano Coretta"
 date: "10/09/2021"
-output: html_document
+output:
+  html_document:
+    number_sections: true
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -10,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
 theme_set(theme_light())
+library(FactoMineR)
+library(factoextra)
+library(brms)
 ```
 
 # Read data
@@ -377,3 +383,161 @@ esperanto %>%
   scale_fill_brewer()
 ```
 
+
+
+
+# Modelling
+
+```{r lang-use-data}
+lang_use <- bind_rows(
+  emilian %>% mutate(language = "emilian"),
+  esperanto %>% mutate(language = "esperanto")
+) %>%
+  select(id, understand, speak, read_write, language, educated:familiar) %>%
+  mutate(
+    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
+    across(educated:familiar, ~ as.ordered(.x))
+  ) %>%
+ drop_na()
+
+attitudes <- lang_use %>%
+  select(educated:familiar)
+```
+
+## MCA
+
+```{r attitudes-mca}
+attitudes_mca <- MCA(attitudes, graph = FALSE)
+attitudes_dims <- attitudes_mca[["ind"]][["coord"]]
+```
+
+```{r screeplot}
+fviz_screeplot(attitudes_mca, addlabels = TRUE, ylim = c(0, 15))
+fviz_mca_biplot(attitudes_mca, repel = TRUE)
+```
+
+```{r mca-cor}
+fviz_mca_var(attitudes_mca, choice = "mca.cor", repel = TRUE)
+```
+
+```{r mca-var}
+fviz_mca_var(attitudes_mca, col.var = "black", shape.var = 15, repel = TRUE)
+```
+
+```{r mca-var-cos2}
+fviz_mca_var(attitudes_mca, col.var = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+```
+
+```{r mca-cos2}
+fviz_cos2(attitudes_mca, choice = "var", axes = 1:2)
+```
+
+
+```{r mca-contrib}
+fviz_contrib(attitudes_mca, choice = "var", axes = 1, top = 15)
+fviz_contrib(attitudes_mca, choice = "var", axes = 2, top = 15)
+fviz_contrib(attitudes_mca, choice = "var", axes = 1:2, top = 15)
+```
+
+```{r mca-ind}
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "trustworthy")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "friendly")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "kind")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "familiar")
+```
+
+
+
+
+## Understand
+
+```{r dim-1}
+lang_use$dim_1 <- -attitudes_dims[, 1]
+```
+
+```{r understand-bm-prior}
+get_prior(
+  understand ~
+    language * dim_1,
+  data = lang_use,
+  family = cumulative()
+)
+
+understand_priors <- c(
+  prior(normal(0, 3), class = Intercept),
+  prior(normal(0, 1), class = b)
+)
+
+understand_pchek <- brm(
+  understand ~
+    language * dim_1,
+  data = lang_use,
+  family = cumulative(),
+  prior = understand_priors,
+  sample_prior = "only",
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/understand_pchek"
+)
+
+conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(lang_use, "language"), categorical = TRUE)
+```
+
+
+```{r understand-bm}
+understand_bm <- brm(
+  understand ~
+    language * dim_1,
+  data = lang_use,
+  family = cumulative(),
+  prior = understand_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/understand_bm"
+)
+```
+
+```{r understand-bm-cond}
+conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(lang_use, "language"))
+```
+
+## Speak
+
+```{r speak-bm}
+speak_bm <- brm(
+  speak ~
+    language * dim_1,
+  data = lang_use,
+  family = cumulative(),
+  # Same priors as understand_bm
+  prior = understand_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/speak_bm"
+)
+```
+
+```{r speak-bm-cond}
+conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
+```
+
+## Read and write
+
+```{r rw-bm}
+rw_bm <- brm(
+  read_write ~
+    language * dim_1,
+  data = lang_use,
+  family = bernoulli(),
+  # Same priors as understand_bm
+  prior = understand_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/rw_bm"
+)
+```
+
+```{r rw-bm-cond}
+conditional_effects(rw_bm, effects = "dim_1:language")
+```
