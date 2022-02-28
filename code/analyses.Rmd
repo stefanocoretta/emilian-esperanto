@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
 theme_set(theme_light())
+library(magrittr)
 library(FactoMineR)
 library(factoextra)
 library(brms)
@@ -226,6 +227,42 @@ emilian %>%
   ggplot(aes(feature, fill = as.factor(rating))) +
   geom_bar(position = "fill") +
   scale_fill_brewer()
+```
+
+## Urban vs Rural
+
+```{r em-rur}
+emil_rur <- emilian %>%
+  mutate(
+    ru_ur = ifelse(
+      str_detect(birth_place, "-RU"), "rural",
+      ifelse(
+        str_detect(birth_place, "-UR"), "urban",
+        NA
+      )
+    )
+  )
+
+emil_rur_clean <- emil_rur %>%
+  select(id, understand, speak, read_write, educated:familiar, ru_ur) %>%
+  mutate(
+    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
+    across(educated:familiar, ~ as.ordered(.x))
+  ) %>%
+ drop_na()
+```
+
+```{r em-rur-plot}
+emil_rur %>%
+  drop_na(ru_ur) %>%
+  ggplot(aes(ru_ur, fill = understand)) +
+  geom_bar()
+
+emil_rur %>%
+  drop_na(ru_ur) %>%
+  ggplot(aes(ru_ur, fill = understand)) +
+  geom_bar(position = "fill")
 ```
 
 
@@ -540,4 +577,80 @@ rw_bm <- brm(
 
 ```{r rw-bm-cond}
 conditional_effects(rw_bm, effects = "dim_1:language")
+```
+
+## Rural vs urban
+
+```{r}
+understand_rur <- emil_rur_clean %>%
+  count(understand, ru_ur) %>%
+  group_by(ru_ur) %>%
+  mutate(
+    ru_ur_prop = n / sum(n)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    understand = factor(understand, ordered = FALSE),
+    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
+  )
+```
+
+```{r understand-rur-priors}
+get_prior(
+  n ~
+    understand * ru_ur,
+  data = understand_rur,
+  family = Beta()
+)
+```
+
+```{r}
+understand_rur_priors <- c(
+  prior(normal(0, 3), class = Intercept),
+  prior(normal(0, 1), class = b)
+)
+
+understand_rur_bm <- brm(
+  ru_ur_prop ~
+    understand * ru_ur,
+  data = understand_rur,
+  family = Beta(),
+  prior = understand_rur_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/understand_rur_bm"
+)
+
+understand_rur_bm
+```
+
+
+```{r}
+speak_rur <- emil_rur_clean %>%
+  count(speak, ru_ur) %>%
+  group_by(ru_ur) %>%
+  mutate(
+    ru_ur_prop = n / sum(n)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    speak = factor(speak, ordered = FALSE),
+    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
+  )
+```
+
+
+```{r}
+speak_rur_bm <- brm(
+  ru_ur_prop ~
+    speak * ru_ur,
+  data = speak_rur,
+  family = Beta(),
+  prior = understand_rur_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/speak_rur_bm"
+)
+
+speak_rur_bm
 ```
