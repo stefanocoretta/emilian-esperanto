@@ -434,7 +434,11 @@ lang_use <- bind_rows(
   mutate(
     understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
-    across(educated:familiar, ~ as.ordered(.x))
+    across(educated:familiar, ~ as.ordered(.x)),
+    mean_comp_raw = as.numeric(understand) +
+      as.numeric(speak) +
+      ifelse(read_write == "Yes", 5, 0),
+    mean_comp = mean_comp_raw / 15
   ) %>%
  drop_na()
 
@@ -579,9 +583,59 @@ rw_bm <- brm(
 conditional_effects(rw_bm, effects = "dim_1:language")
 ```
 
+## Mean competence
+
+```{r meanc}
+lang_use %>%
+  ggplot(aes(mean_comp)) +
+  geom_density() +
+  geom_rug()
+```
+
+```{r meanc-jitter}
+lang_use %>%
+  ggplot(aes(language, mean_comp)) +
+  geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
+  expand_limits(y = 0)
+```   
+
+```{r mean-jitter-dim}
+lang_use %>%
+  ggplot(aes(language, mean_comp, colour = dim_1)) +
+  geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
+  expand_limits(y = 0)
+```
+
+```{r meanc-dim1}
+lang_use %>%
+  ggplot(aes(dim_1, mean_comp)) +
+  geom_point() +
+  facet_grid(~ language)
+```
+
+```{r meanc-bm}
+mean_comp_bm <- brm(
+  mean_comp ~
+    language *
+    dim_1,
+  data = lang_use,
+  family = zero_one_inflated_beta(),
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/mean_comp_bm"
+)
+
+mean_comp_bm
+```
+
+```{r meanc-bm-cond}
+conditional_effects(mean_comp_bm, effects = "dim_1:language")
+```
+
+
 ## Rural vs urban
 
-```{r}
+```{r understand-rur}
 understand_rur <- emil_rur_clean %>%
   count(understand, ru_ur) %>%
   group_by(ru_ur) %>%
@@ -604,7 +658,7 @@ get_prior(
 )
 ```
 
-```{r}
+```{r understand-rur-bm}
 understand_rur_priors <- c(
   prior(normal(0, 3), class = Intercept),
   prior(normal(0, 1), class = b)
@@ -625,7 +679,7 @@ understand_rur_bm
 ```
 
 
-```{r}
+```{r speak-rur}
 speak_rur <- emil_rur_clean %>%
   count(speak, ru_ur) %>%
   group_by(ru_ur) %>%
@@ -640,7 +694,7 @@ speak_rur <- emil_rur_clean %>%
 ```
 
 
-```{r}
+```{r speak-rur-bm}
 speak_rur_bm <- brm(
   ru_ur_prop ~
     speak * ru_ur,
