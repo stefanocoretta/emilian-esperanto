@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
 theme_set(theme_light())
@@ -17,6 +17,9 @@ library(magrittr)
 library(FactoMineR)
 library(factoextra)
 library(brms)
+library(rnaturalearth)
+library(sf)
+library(tidygeocoder)
 ```
 
 # Read data
@@ -266,7 +269,7 @@ emil_rur %>%
 ```
 
 
-# Esperanto: Descriptive
+# Esperanto
 
 ## Participants
 
@@ -421,6 +424,30 @@ esperanto %>%
 ```
 
 
+# Locations
+
+```{r}
+if (file.exists("./data/raw/geo.csv")) {
+  cat("Reading geocoding...\n")
+  geo <- read_csv("./data/raw/geo.csv")
+} else {
+  birth_em <- emilian %>% select(birth_place_it) %>% unique()
+  geo <- geocode(birth_em, city = birth_place_it, method = "osm", verbose = TRUE)
+  write_csv(geo, file = "./data/raw/geo.csv")
+}
+```
+
+
+```{r}
+europe <- ne_countries(continent = "Europe", returnclass = "sf", scale = "medium")
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = europe) +
+  geom_point(data = geo, aes(long, lat)) +
+  coord_sf(xlim = c(7, 14), ylim = c(44, 46))
+```
 
 
 # Modelling
@@ -635,6 +662,8 @@ conditional_effects(mean_comp_bm, effects = "dim_1:language")
 
 ## Rural vs urban
 
+### Understand
+
 ```{r understand-rur}
 understand_rur <- emil_rur_clean %>%
   count(understand, ru_ur) %>%
@@ -678,6 +707,11 @@ understand_rur_bm <- brm(
 understand_rur_bm
 ```
 
+```{r understand-rur-cond}
+conditional_effects(understand_rur_bm, "understand:ru_ur")
+```
+
+## Speak
 
 ```{r speak-rur}
 speak_rur <- emil_rur_clean %>%
@@ -708,3 +742,43 @@ speak_rur_bm <- brm(
 
 speak_rur_bm
 ```
+
+```{r speak-rur-cond}
+conditional_effects(speak_rur_bm, "speak:ru_ur")
+```
+
+### Read and write
+
+```{r rw-rur}
+rw_rur <- emil_rur_clean %>%
+  count(read_write, ru_ur) %>%
+  group_by(ru_ur) %>%
+  mutate(
+    ru_ur_prop = n / sum(n)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
+  )
+```
+
+
+```{r rw-rur-bm}
+rw_rur_bm <- brm(
+  ru_ur_prop ~
+    read_write * ru_ur,
+  data = rw_rur,
+  family = Beta(),
+  prior = understand_rur_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/rds/rw_rur_bm"
+)
+
+rw_rur_bm
+```
+
+```{r rw-rur-cond}
+conditional_effects(rw_rur_bm, "read_write:ru_ur")
+```
+
