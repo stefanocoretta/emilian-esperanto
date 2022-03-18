@@ -42,6 +42,54 @@ esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = head
     understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
   )
+
+emilianto <- bind_rows(
+  emilian %>% mutate(language = "emilian"),
+  esperanto %>% mutate(language = "esperanto")
+) %>%
+  mutate(
+    # Fix coding error MD+ > MD
+    languages_family = ifelse(languages_family == "MD+", "MD", languages_family),
+    # Recode
+    profession_2 = case_when(
+      profession == "STUDENT" ~ "student",
+      profession %in% c("RETIRED", "NOTIW") ~ "not in work",
+      profession %in% c("ISCO-AGR", "ISCO-CLE", "ISCO-SER", "ISCO-LAB", "ISCO-ELE") ~ "unskilled",
+      profession %in% c("ISCO-MAN", "ISCO-PRO", "ISCO-TEC", "ISCO-CRA", "ISCO-ARM") ~ "skilled"
+    ),
+    languages_family_2 = case_when(
+      languages_family %in% c("BD", "MULTD", "BE", "MULTE") ~ "multi_e",
+      languages_family %in% c("BO", "MULTO") ~ "multi_o",
+      languages_family %in% c("MD", "ME") ~ "mono_e",
+      languages_family %in% c("MI", "MO") ~ "mono_o",
+    ),
+    age_2 = case_when(
+      age < 21 ~ "0-20",
+      age < 41 ~ "21-40",
+      age < 61 ~ "41-60",
+      age > 60 ~ "61+"
+    )
+  )
+
+lang_use <- bind_rows(
+  emilian %>% mutate(language = "emilian"),
+  esperanto %>% mutate(language = "esperanto")
+) %>%
+  select(id, age, understand, speak, read_write, language, educated:familiar) %>%
+  mutate(
+    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
+    across(educated:familiar, ~ as.ordered(.x)),
+    mean_comp_raw = as.numeric(understand) +
+      as.numeric(speak) +
+      ifelse(read_write == "Yes", 5, 0),
+    mean_comp = mean_comp_raw / 15,
+    languages_f
+  ) %>%
+ drop_na()
+
+attitudes <- lang_use %>%
+  select(educated:familiar)
 ```
 
 # Emilian
@@ -452,27 +500,6 @@ ggplot() +
 
 # Modelling
 
-```{r lang-use-data}
-lang_use <- bind_rows(
-  emilian %>% mutate(language = "emilian"),
-  esperanto %>% mutate(language = "esperanto")
-) %>%
-  select(id, age, understand, speak, read_write, language, educated:familiar) %>%
-  mutate(
-    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
-    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
-    across(educated:familiar, ~ as.ordered(.x)),
-    mean_comp_raw = as.numeric(understand) +
-      as.numeric(speak) +
-      ifelse(read_write == "Yes", 5, 0),
-    mean_comp = mean_comp_raw / 15
-  ) %>%
- drop_na()
-
-attitudes <- lang_use %>%
-  select(educated:familiar)
-```
-
 ## MCA
 
 ```{r attitudes-mca}
@@ -789,5 +816,21 @@ rw_rur_bm
 
 ```{r rw-rur-cond}
 conditional_effects(rw_rur_bm, "read_write:ru_ur")
+```
+
+# Tables and plots included in the paper
+
+```{r}
+columns <- c("gender", "age_2", "profession_2", "languages_family_2")
+
+for (column in columns) {
+  emilianto %>%
+    group_by(language) %>%
+    count(.data[[column]]) %>%
+    mutate(
+      prop = round(n / sum(n, na.rm = TRUE) * 100, 1)
+    ) %>%
+    print()
+}
 ```
 
