@@ -83,8 +83,7 @@ lang_use <- bind_rows(
     mean_comp_raw = as.numeric(understand) +
       as.numeric(speak) +
       ifelse(read_write == "Yes", 5, 0),
-    mean_comp = mean_comp_raw / 15,
-    languages_f
+    mean_comp = mean_comp_raw / 15
   ) %>%
  drop_na()
 
