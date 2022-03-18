@@ -426,7 +426,7 @@ esperanto %>%
 
 # Locations
 
-```{r}
+```{r geo}
 if (file.exists("./data/raw/geo.csv")) {
   cat("Reading geocoding...\n")
   geo <- read_csv("./data/raw/geo.csv")
@@ -438,15 +438,15 @@ if (file.exists("./data/raw/geo.csv")) {
 ```
 
 
-```{r}
+```{r europe}
 europe <- ne_countries(continent = "Europe", returnclass = "sf", scale = "medium")
 ```
 
-```{r}
+```{r emilian}
 ggplot() +
   geom_sf(data = europe) +
   geom_point(data = geo, aes(long, lat)) +
-  coord_sf(xlim = c(7, 14), ylim = c(44, 46))
+  coord_sf(xlim = c(7, 14), ylim = c(43, 47))
 ```
 
 
@@ -457,7 +457,7 @@ lang_use <- bind_rows(
   emilian %>% mutate(language = "emilian"),
   esperanto %>% mutate(language = "esperanto")
 ) %>%
-  select(id, understand, speak, read_write, language, educated:familiar) %>%
+  select(id, age, understand, speak, read_write, language, educated:familiar) %>%
   mutate(
     understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
@@ -659,6 +659,15 @@ mean_comp_bm
 conditional_effects(mean_comp_bm, effects = "dim_1:language")
 ```
 
+## Dim-1 and age
+
+```{r dim1-age}
+lang_use %>%
+  ggplot(aes(age, dim_1)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
 
 ## Rural vs urban
 
@@ -711,7 +720,7 @@ understand_rur_bm
 conditional_effects(understand_rur_bm, "understand:ru_ur")
 ```
 
-## Speak
+### Speak
 
 ```{r speak-rur}
 speak_rur <- emil_rur_clean %>%
