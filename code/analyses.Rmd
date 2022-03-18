@@ -68,7 +68,20 @@ emilianto <- bind_rows(
       age < 41 ~ "21-40",
       age < 61 ~ "41-60",
       age > 60 ~ "61+"
-    )
+    ),
+    across(ends_with(c("_read", "_write")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0)),
+    across(starts_with(c("with_", "at_", "in_", "about_")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0))
+  ) %>%
+  rowwise() %>%
+  mutate(
+    passive_comp = sum(c_across(ends_with("_read")), na.rm = TRUE),
+    active_comp = sum(c_across(starts_with(c("with_", "at_", "in_", "about_")) | ends_with("_write")), na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    passive_comp = ifelse(understand %in% c("G", "VG"), passive_comp + 1, passive_comp),
+    passive_prop = passive_comp / 13,
+    active_prop = active_comp / 42
   )
 
 lang_use <- bind_rows(
@@ -833,3 +846,16 @@ for (column in columns) {
 }
 ```
 
+```{r passive-prop}
+emilianto %>%
+  ggplot(aes(language, passive_prop)) +
+  geom_jitter() +
+  ylim(0, 1)
+```
+
+```{r active-prop}
+emilianto %>%
+  ggplot(aes(language, active_prop)) +
+  geom_jitter() +
+  ylim(0, 1)
+```
