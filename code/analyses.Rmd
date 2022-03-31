@@ -847,16 +847,38 @@ for (column in columns) {
 }
 ```
 
-```{r passive-prop}
-emilianto %>%
-  ggplot(aes(language, passive_prop)) +
-  geom_jitter() +
-  ylim(0, 1)
+
+```{r passive-active-prop}
+competence <- emilianto %>%
+  filter(gender != "LGBTQ+") %>%
+  pivot_longer(c(passive_prop, active_prop), names_to = "competence", values_to = "proportion")
 ```
 
-```{r active-prop}
-emilianto %>%
-  ggplot(aes(language, active_prop)) +
-  geom_jitter() +
-  ylim(0, 1)
+```{r}
+competence %>% 
+  ggplot(aes(proportion, fill = gender)) +
+  geom_density(alpha = 0.6, colour = NA) +
+  geom_rug() +
+  scale_fill_brewer(type = "qual") +
+  facet_grid(competence ~ language)
 ```
+
+```{r}
+competence %>%
+  ggplot(aes(gender, proportion, fill = gender)) +
+  geom_violin(colour = NA) +
+  geom_point(alpha = 0.01) +
+  ylim(0, 1) +
+  facet_grid(competence ~ language) +
+  scale_fill_brewer(type = "qual")
+```
+
+
+```{r}
+competence %>%
+  ggplot(aes(proportion, fill = gender)) +
+  geom_histogram(bins = 15) +
+  scale_fill_brewer(type = "qual") +
+  facet_grid(competence ~ language)
+```
+
