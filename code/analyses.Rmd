@@ -44,8 +44,8 @@ esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = head
   )
 
 emilianto <- bind_rows(
-  emilian %>% mutate(language = "emilian"),
-  esperanto %>% mutate(language = "esperanto")
+  emilian %>% mutate(language = "Emilian"),
+  esperanto %>% mutate(language = "Esperanto")
 ) %>%
   mutate(
     # Fix coding error MD+ > MD
@@ -85,8 +85,8 @@ emilianto <- bind_rows(
   )
 
 lang_use <- bind_rows(
-  emilian %>% mutate(language = "emilian"),
-  esperanto %>% mutate(language = "esperanto")
+  emilian %>% mutate(language = "Emilian"),
+  esperanto %>% mutate(language = "Esperanto")
 ) %>%
   select(id, age, understand, speak, read_write, language, educated:familiar) %>%
   mutate(
@@ -866,11 +866,15 @@ competence %>%
 ```{r}
 competence %>%
   ggplot(aes(gender, proportion, fill = gender)) +
-  geom_violin(colour = NA) +
-  geom_point(alpha = 0.01) +
+  geom_hline(yintercept = 0, size = 0.25) +
+  geom_hline(yintercept = 1, size = 0.25) +
+  geom_violin(colour = NA, bw = 0.1) +
+  geom_boxplot(width = 0.05, fill = "black", colour = "black") +
+  stat_summary(colour = "white", fun = "median", geom = "point") +
   ylim(0, 1) +
-  facet_grid(competence ~ language) +
-  scale_fill_brewer(type = "qual")
+  facet_grid(competence ~ language, labeller = as_labeller(list("competence" = c("a", "b")))) +
+  scale_fill_brewer(type = "qual", palette = "Dark2") +
+  theme_minimal()
 ```
 
 
