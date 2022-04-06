@@ -832,7 +832,7 @@ conditional_effects(rw_rur_bm, "read_write:ru_ur")
 
 # Tables and plots included in the paper
 
-```{r}
+```{r tables}
 columns <- c("gender", "age_2", "profession_2", "languages_family_2")
 
 for (column in columns) {
@@ -848,22 +848,35 @@ for (column in columns) {
 ```
 
 
+```{r tables-2}
+columns <- c("gender", "age_2", "profession_2", "languages_family_2")
+
+for (column in columns) {
+  emilianto %>%
+    filter(
+      passive_prop >= 0.5,
+      active_prop >= 0.5
+    ) %>%
+    group_by(language) %>%
+    count(.data[[column]]) %>%
+    mutate(
+      prop = round(n / sum(n, na.rm = TRUE) * 100, 1)
+    ) %>%
+    pivot_wider(names_from = .data[[column]], values_from = c(n, prop)) %>%
+    print()
+}
+```
+
 ```{r passive-active-prop}
 competence <- emilianto %>%
   filter(gender != "LGBTQ+") %>%
-  pivot_longer(c(passive_prop, active_prop), names_to = "competence", values_to = "proportion")
+  pivot_longer(c(passive_prop, active_prop), names_to = "competence", values_to = "proportion") %>%
+  mutate(
+    competence = recode_factor(competence, "passive_prop" = "passive", "active_prop" = "active")
+  )
 ```
 
-```{r}
-competence %>% 
-  ggplot(aes(proportion, fill = gender)) +
-  geom_density(alpha = 0.6, colour = NA) +
-  geom_rug() +
-  scale_fill_brewer(type = "qual") +
-  facet_grid(competence ~ language)
-```
-
-```{r}
+```{r pap-plot}
 competence %>%
   ggplot(aes(gender, proportion, fill = gender)) +
   geom_hline(yintercept = 0, size = 0.25) +
@@ -874,15 +887,14 @@ competence %>%
   ylim(0, 1) +
   facet_grid(competence ~ language, labeller = as_labeller(list("competence" = c("a", "b")))) +
   scale_fill_brewer(type = "qual", palette = "Dark2") +
-  theme_minimal()
+  labs(
+    y = "Competence (proportion)",
+    x = "Gender"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none")
+
+ggsave("./img/competence.png", width = 7, height = 5)
 ```
 
-
-```{r}
-competence %>%
-  ggplot(aes(proportion, fill = gender)) +
-  geom_histogram(bins = 15) +
-  scale_fill_brewer(type = "qual") +
-  facet_grid(competence ~ language)
-```
 
