@@ -1,0 +1,5 @@
+outs:
+- md5: e6495035abf58711eb1ad83508fc8769.dir
+  size: 2705408
+  nfiles: 8
+  path: rds
