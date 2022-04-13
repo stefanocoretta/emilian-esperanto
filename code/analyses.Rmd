@@ -601,13 +601,30 @@ understand_bm <- brm(
   prior = understand_priors,
   backend = "cmdstanr",
   cores = 4,
+  threads = threading(2),
   file = "./data/rds/understand_bm"
 )
 ```
 
 ```{r understand-bm-cond}
-conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(lang_use, "language"))
+ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(lang_use, "language"), plot = FALSE)
 ```
+
+```{r understand-bm-cond-plot}
+plot(ubc, plot = FALSE)[[1]] +
+  scale_fill_brewer(type = "div", palette = "PRGn") +
+  scale_color_brewer(type = "div", palette = "PRGn") +
+  labs(
+    x = "Attitude (MCA Dimension 1)",
+    y = "Probability",
+    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
+    colour = "Understand\ncompetence",
+    fill = "Understand\ncompetence"
+  )
+
+ggsave("img/understand-brm.png", width = 7, height = 5)
+```
+
 
 ## Speak
 
@@ -621,13 +638,30 @@ speak_bm <- brm(
   prior = understand_priors,
   backend = "cmdstanr",
   cores = 4,
+  threads = threading(2),
   file = "./data/rds/speak_bm"
 )
 ```
 
 ```{r speak-bm-cond}
-conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
+sbc <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
 ```
+
+```{r speak-bm-cond-plot}
+plot(sbc, plot = FALSE)[[1]] +
+  scale_fill_brewer(type = "div", palette = "PRGn") +
+  scale_color_brewer(type = "div", palette = "PRGn") +
+  labs(
+    x = "Attitude (MCA Dimension 1)",
+    y = "Probability",
+    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
+    colour = "Speaking\ncompetence",
+    fill = "Speaking\ncompetence"
+  )
+
+ggsave("img/speak-brm.png", width = 7, height = 5)
+```
+
 
 ## Read and write
 
@@ -641,6 +675,7 @@ rw_bm <- brm(
   prior = understand_priors,
   backend = "cmdstanr",
   cores = 4,
+  threads = threading(2),
   file = "./data/rds/rw_bm"
 )
 ```
@@ -749,6 +784,7 @@ understand_rur_bm <- brm(
   prior = understand_rur_priors,
   backend = "cmdstanr",
   cores = 4,
+  threads = threading(2),
   file = "./data/rds/understand_rur_bm"
 )
 
