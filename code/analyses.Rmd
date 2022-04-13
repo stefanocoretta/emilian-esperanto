@@ -854,8 +854,8 @@ columns <- c("gender", "age_2", "profession_2", "languages_family_2")
 for (column in columns) {
   emilianto %>%
     filter(
-      passive_prop >= 0.5,
-      active_prop >= 0.5
+      understand %in% c("50/50", "G", "VG"),
+      speak %in% c("50/50", "G", "VG")
     ) %>%
     group_by(language) %>%
     count(.data[[column]]) %>%
