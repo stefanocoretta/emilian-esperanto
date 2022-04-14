@@ -606,6 +606,12 @@ understand_bm <- brm(
 )
 ```
 
+```{r understand-bm-sum}
+understand_bm
+summary(understand_bm, prob = 0.7)
+```
+
+
 ```{r understand-bm-cond}
 ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(lang_use, "language"), plot = FALSE)
 ```
@@ -643,6 +649,12 @@ speak_bm <- brm(
 )
 ```
 
+```{r speak-bm-sum}
+speak_bm
+summary(speak_bm, prob = 0.4)
+```
+
+
 ```{r speak-bm-cond}
 sbc <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
 ```
@@ -668,8 +680,8 @@ ggsave("img/speak-brm.png", width = 7, height = 5)
 ```{r rw-bm}
 rw_bm <- brm(
   read_write ~
-    language * dim_1,
-  data = lang_use,
+    dim_1,
+  data = lang_use %>% filter(language == "Emilian"),
   family = bernoulli(),
   # Same priors as understand_bm
   prior = understand_priors,
@@ -680,8 +692,13 @@ rw_bm <- brm(
 )
 ```
 
+```{r rw-bm-sum}
+rw_bm
+```
+
+
 ```{r rw-bm-cond}
-conditional_effects(rw_bm, effects = "dim_1:language")
+conditional_effects(rw_bm, effects = "dim_1")
 ```
 
 ## Mean competence
