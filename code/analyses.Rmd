@@ -554,7 +554,23 @@ fviz_mca_ind(attitudes_mca, label = "none", habillage = "kind")
 fviz_mca_ind(attitudes_mca, label = "none", habillage = "familiar")
 ```
 
+```{r mca-dim1}
+attitudes_mca$var$coord %>%
+  as_tibble(rownames = "var") %>%
+  separate(var, into = c("attitude", "score")) %>%
+  ggplot(aes(-`Dim 1`, attitude, colour = score, size = score)) +
+  geom_point() +
+  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571"))
+```
 
+```{r mca-dim2}
+attitudes_mca$var$coord %>%
+  as_tibble(rownames = "var") %>%
+  separate(var, into = c("attitude", "score")) %>%
+  ggplot(aes(`Dim 2`, attitude, colour = score, size = score)) +
+  geom_point() +
+  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571"))
+```
 
 
 ## Understand
@@ -618,6 +634,7 @@ ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE,
 
 ```{r understand-bm-cond-plot}
 plot(ubc, plot = FALSE)[[1]] +
+  geom_vline(xintercept = 0, linetype = "dashed") +
   scale_fill_brewer(type = "div", palette = "PRGn") +
   scale_color_brewer(type = "div", palette = "PRGn") +
   labs(
