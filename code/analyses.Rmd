@@ -555,12 +555,27 @@ fviz_mca_ind(attitudes_mca, label = "none", habillage = "familiar")
 ```
 
 ```{r mca-dim1}
-attitudes_mca$var$coord %>%
+mca_dim1 <- attitudes_mca$var$coord %>%
   as_tibble(rownames = "var") %>%
-  separate(var, into = c("attitude", "score")) %>%
+  separate(var, into = c("attitude", "score"))
+
+# Note that we are inverting Dim1 so that greater means more positive attitude.
+
+mca_dim1_mean <- -mean(mca_dim1$`Dim 1`[mca_dim1$score == 3])
+
+mca_dim1 %>%
   ggplot(aes(-`Dim 1`, attitude, colour = score, size = score)) +
+  geom_vline(xintercept = mca_dim1_mean, linetype = "dashed") +
   geom_point() +
-  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571"))
+  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571")) +
+  labs(
+    x = "Dimension 1 score",
+    y = "Qualities",
+    colour = "Likert score",
+    size = "Likert score"
+  )
+
+ggsave("img/dim1.png", width = 7, height = 5)
 ```
 
 ```{r mca-dim2}
