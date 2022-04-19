@@ -1,0 +1,221 @@
+---
+title: "Data preparation"
+author: "Stefano Coretta"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = here::here())
+library(tidyverse)
+theme_set(theme_light())
+library(magrittr)
+library(FactoMineR)
+library(factoextra)
+```
+
+# Read data
+
+We first read the Emilian and Esperanto questionnaire data. Tidy column names are added.
+
+```{r read-data, message=FALSE}
+# Emilian and Esperanto headings
+headings_em <- read_csv("data/raw/headings-emilian.csv")
+headings_eo <- read_csv("data/raw/headings-esperanto.csv")
+
+emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA", "na"))
+
+esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA", "na")) %>%
+  mutate(
+    # Clean age column
+    age = str_remove(age, "jaroj"),
+    age = str_replace(age, "naskiĝis en la 1995a", "25"),
+    age = as.numeric(age)
+  )
+```
+
+# Bind Emilian and Esperanto data
+
+We can now bind the data together, apply recoding to some columns and create new columns.
+
+```{r emilianto}
+#### Main data table ####
+emilianto <- bind_rows(
+  emilian %>% mutate(language = "Emilian"),
+  esperanto %>% mutate(language = "Esperanto")
+) %>%
+  
+  #### Refactor and recode columns ####
+  mutate(
+    # Fix coding error MD+ > MD
+    languages_family = ifelse(languages_family == "MD+", "MD", languages_family),
+    # Refactor understand and speak
+    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
+    across(educated:familiar, ~ as.ordered(.x)),
+    # Recode columns
+    profession_2 = case_when(
+      profession == "STUDENT" ~ "student",
+      profession %in% c("RETIRED", "NOTIW") ~ "not in work",
+      profession %in% c("ISCO-AGR", "ISCO-CLE", "ISCO-SER", "ISCO-LAB", "ISCO-ELE") ~ "unskilled",
+      profession %in% c("ISCO-MAN", "ISCO-PRO", "ISCO-TEC", "ISCO-CRA", "ISCO-ARM") ~ "skilled"
+    ),
+    languages_family_2 = case_when(
+      languages_family %in% c("BD", "MULTD", "BE", "MULTE") ~ "multi_e",
+      languages_family %in% c("BO", "MULTO") ~ "multi_o",
+      languages_family %in% c("MD", "ME") ~ "mono_e",
+      languages_family %in% c("MI", "MO") ~ "mono_o",
+    ),
+    age_2 = case_when(
+      age < 21 ~ "0-20",
+      age < 41 ~ "21-40",
+      age < 61 ~ "41-60",
+      age > 60 ~ "61+"
+    ),
+    # Recode passive and active competence spaces
+    across(ends_with(c("_read", "_write")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0)),
+    across(starts_with(c("with_", "at_", "in_", "about_")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0))
+  ) %>%
+
+  #### Passive and active competence spaces ####
+  rowwise() %>%
+  mutate(
+    # Create passive and active competence spaces counts
+    passive_spaces = sum(c_across(ends_with("_read")), na.rm = TRUE),
+    active_spaces = sum(c_across(starts_with(c("with_", "at_", "in_", "about_")) | ends_with("_write")), na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    # Passive and active spaces proportion
+    passive_spaces = ifelse(understand %in% c("G", "VG"), passive_spaces + 1, passive_spaces),
+    # Proportion of "yes" out of 13 passive spaces
+    passive_prop = passive_spaces / 13,
+    # Proportion of "yes" out of 42 active spaces
+    active_prop = active_spaces / 42
+  ) %>%
+  
+  #### Mean competence ####
+  mutate(
+    comp_counts = as.numeric(understand) +
+      as.numeric(speak) +
+      ifelse(read_write == "Yes", 5, 0),
+    mean_comp = comp_counts / 15
+  )
+
+
+
+#### Attitudes data for MCA ####
+attitudes <- emilianto %>%
+  select(educated:familiar) %>%
+  drop_na()
+
+
+
+#### Passive and active spaces long data table ####
+pa_spaces <- emilianto %>%
+  filter(gender != "LGBTQ+") %>%
+  pivot_longer(c(passive_prop, active_prop), names_to = "spaces", values_to = "proportion") %>%
+  mutate(
+    spaces = recode_factor(spaces, "passive_prop" = "passive", "active_prop" = "active")
+  )
+```
+
+# Multiple Correspondence Analysis
+
+This section runs the Multiple Correspondence Analysis.
+The aim is to reduce the 8 qualities to a couple dimensions to simplify subsequent analyses.
+
+```{r attitudes-mca}
+attitudes_mca <- MCA(attitudes, graph = FALSE)
+attitudes_dims <- attitudes_mca[["ind"]][["coord"]]
+```
+
+```{r screeplot}
+fviz_screeplot(attitudes_mca, addlabels = TRUE, ylim = c(0, 15))
+fviz_mca_biplot(attitudes_mca, repel = TRUE)
+```
+
+```{r mca-cor}
+fviz_mca_var(attitudes_mca, choice = "mca.cor", repel = TRUE)
+```
+
+```{r mca-var}
+fviz_mca_var(attitudes_mca, col.var = "black", shape.var = 15, repel = TRUE)
+```
+
+```{r mca-var-cos2}
+fviz_mca_var(attitudes_mca, col.var = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+```
+
+```{r mca-cos2}
+fviz_cos2(attitudes_mca, choice = "var", axes = 1:2)
+```
+
+```{r mca-contrib}
+fviz_contrib(attitudes_mca, choice = "var", axes = 1, top = 15)
+fviz_contrib(attitudes_mca, choice = "var", axes = 2, top = 15)
+fviz_contrib(attitudes_mca, choice = "var", axes = 1:2, top = 15)
+```
+
+```{r mca-ind}
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "trustworthy")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "friendly")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "kind")
+fviz_mca_ind(attitudes_mca, label = "none", habillage = "familiar")
+```
+
+```{r mca-dim1}
+mca_dim1 <- attitudes_mca$var$coord %>%
+  as_tibble(rownames = "var") %>%
+  separate(var, into = c("attitude", "score"))
+
+# Note that we are inverting Dim1 so that greater means more positive attitude.
+
+mca_dim1_mean <- -mean(mca_dim1$`Dim 1`[mca_dim1$score == 3])
+
+mca_dim1 %>%
+  ggplot(aes(-`Dim 1`, attitude, colour = score, size = score)) +
+  geom_vline(xintercept = mca_dim1_mean, linetype = "dashed") +
+  geom_point() +
+  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571")) +
+  labs(
+    x = "Dimension 1 score",
+    y = "Qualities",
+    colour = "Likert score",
+    size = "Likert score"
+  )
+
+ggsave("img/dim1.png", width = 7, height = 5)
+```
+
+```{r mca-dim2}
+attitudes_mca$var$coord %>%
+  as_tibble(rownames = "var") %>%
+  separate(var, into = c("attitude", "score")) %>%
+  ggplot(aes(`Dim 2`, attitude, colour = score, size = score)) +
+  geom_point() +
+  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571"))
+```
+
+# Add Dimension 1
+
+We can now create `emilianto_attitude` which includes Dimension 1 (note that this data table only contains non-NA observations in `educated:familiar`).
+
+Note that for ease of interpretation we have reversed the values of Dimension 1 so that lower values mean a more negative attitude while more positive values mean a more positive attitude.
+
+```{r add-dim1}
+emilianto_attitude <- emilianto %>%
+  drop_na(educated:familiar) %>%
+  mutate(dim_1 = -attitudes_dims[, 1])
+```
+
+# Save all data tables
+
+```{r save}
+saveRDS(emilianto, "data/rds/emilianto.rds")
+saveRDS(emilianto_attitude, "data/rds/emilianto_attitude.rds")
+saveRDS(attitudes, "data/rds/attitudes.rds")
+saveRDS(pa_spaces, "data/rds/pa_spaces.rds")
+```
+

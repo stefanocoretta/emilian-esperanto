@@ -24,87 +24,20 @@ library(tidygeocoder)
 
 # Read data
 
-```{r data}
-headings_em <- read_csv("data/raw/headings-emilian.csv")
-headings_eo <- read_csv("data/raw/headings-esperanto.csv")
-
-emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA", "na")) %>%
-  mutate(
-    understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
-    speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
-  )
-
-esperanto <- read_csv("data/raw/esperanto-clean.csv", skip = 1, col_names = headings_eo$new, na = c("", "NA", "na")) %>%
-  mutate(
-    age = str_remove(age, "jaroj"),
-    age = str_replace(age, "naskiĝis en la 1995a", "25"),
-    age = as.numeric(age),
-    understand = factor(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
-    speak = factor(speak, levels = c("NO", "AL", "50/50", "G", "VG"))
-  )
-
-emilianto <- bind_rows(
-  emilian %>% mutate(language = "Emilian"),
-  esperanto %>% mutate(language = "Esperanto")
-) %>%
-  mutate(
-    # Fix coding error MD+ > MD
-    languages_family = ifelse(languages_family == "MD+", "MD", languages_family),
-    # Recode
-    profession_2 = case_when(
-      profession == "STUDENT" ~ "student",
-      profession %in% c("RETIRED", "NOTIW") ~ "not in work",
-      profession %in% c("ISCO-AGR", "ISCO-CLE", "ISCO-SER", "ISCO-LAB", "ISCO-ELE") ~ "unskilled",
-      profession %in% c("ISCO-MAN", "ISCO-PRO", "ISCO-TEC", "ISCO-CRA", "ISCO-ARM") ~ "skilled"
-    ),
-    languages_family_2 = case_when(
-      languages_family %in% c("BD", "MULTD", "BE", "MULTE") ~ "multi_e",
-      languages_family %in% c("BO", "MULTO") ~ "multi_o",
-      languages_family %in% c("MD", "ME") ~ "mono_e",
-      languages_family %in% c("MI", "MO") ~ "mono_o",
-    ),
-    age_2 = case_when(
-      age < 21 ~ "0-20",
-      age < 41 ~ "21-40",
-      age < 61 ~ "41-60",
-      age > 60 ~ "61+"
-    ),
-    across(ends_with(c("_read", "_write")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0)),
-    across(starts_with(c("with_", "at_", "in_", "about_")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0))
-  ) %>%
-  rowwise() %>%
-  mutate(
-    passive_comp = sum(c_across(ends_with("_read")), na.rm = TRUE),
-    active_comp = sum(c_across(starts_with(c("with_", "at_", "in_", "about_")) | ends_with("_write")), na.rm = TRUE)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    passive_comp = ifelse(understand %in% c("G", "VG"), passive_comp + 1, passive_comp),
-    passive_prop = passive_comp / 13,
-    active_prop = active_comp / 42
-  )
-
-lang_use <- bind_rows(
-  emilian %>% mutate(language = "Emilian"),
-  esperanto %>% mutate(language = "Esperanto")
-) %>%
-  select(id, age, understand, speak, read_write, language, educated:familiar) %>%
-  mutate(
-    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
-    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
-    across(educated:familiar, ~ as.ordered(.x)),
-    mean_comp_raw = as.numeric(understand) +
-      as.numeric(speak) +
-      ifelse(read_write == "Yes", 5, 0),
-    mean_comp = mean_comp_raw / 15
-  ) %>%
- drop_na()
-
-attitudes <- lang_use %>%
-  select(educated:familiar)
+```{r}
+emilianto <- readRDS("data/rds/emilianto.rds")
+emilianto_attitude <- readRDS("data/rds/emilianto_attitude.rds")
+attitudes <- readRDS("data/rds/attitudes.rds")
+pa_spaces <- readRDS("data/rds/pa_spaces.rds")
 ```
 
+
 # Emilian
+
+```{r emilian}
+emilian <- emilianto %>%
+  filter(language == "Emilian")
+```
 
 ## Participants
 
@@ -216,7 +149,7 @@ emilian %>%
 ```
 
 ```{r em-speak-age}
-esperanto %>%
+emilian %>%
   ggplot(aes(age, fill = speak)) +
   geom_histogram(binwidth = 5) +
   facet_grid(speak ~ .)
@@ -330,6 +263,11 @@ emil_rur %>%
 
 
 # Esperanto
+
+```{r esperanto}
+esperanto <- emilianto %>%
+  filter(language == "Esperanto")
+```
 
 ## Participants
 
@@ -483,6 +421,14 @@ esperanto %>%
   scale_fill_brewer()
 ```
 
+# Dim-1 and age
+
+```{r dim1-age}
+emilianto_attitude %>%
+  ggplot(aes(age, dim_1, colour = language)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x")
+```
 
 # Locations
 
@@ -512,93 +458,13 @@ ggplot() +
 
 # Modelling
 
-## MCA
-
-```{r attitudes-mca}
-attitudes_mca <- MCA(attitudes, graph = FALSE)
-attitudes_dims <- attitudes_mca[["ind"]][["coord"]]
-```
-
-```{r screeplot}
-fviz_screeplot(attitudes_mca, addlabels = TRUE, ylim = c(0, 15))
-fviz_mca_biplot(attitudes_mca, repel = TRUE)
-```
-
-```{r mca-cor}
-fviz_mca_var(attitudes_mca, choice = "mca.cor", repel = TRUE)
-```
-
-```{r mca-var}
-fviz_mca_var(attitudes_mca, col.var = "black", shape.var = 15, repel = TRUE)
-```
-
-```{r mca-var-cos2}
-fviz_mca_var(attitudes_mca, col.var = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
-```
-
-```{r mca-cos2}
-fviz_cos2(attitudes_mca, choice = "var", axes = 1:2)
-```
-
-
-```{r mca-contrib}
-fviz_contrib(attitudes_mca, choice = "var", axes = 1, top = 15)
-fviz_contrib(attitudes_mca, choice = "var", axes = 2, top = 15)
-fviz_contrib(attitudes_mca, choice = "var", axes = 1:2, top = 15)
-```
-
-```{r mca-ind}
-fviz_mca_ind(attitudes_mca, label = "none", habillage = "trustworthy")
-fviz_mca_ind(attitudes_mca, label = "none", habillage = "friendly")
-fviz_mca_ind(attitudes_mca, label = "none", habillage = "kind")
-fviz_mca_ind(attitudes_mca, label = "none", habillage = "familiar")
-```
-
-```{r mca-dim1}
-mca_dim1 <- attitudes_mca$var$coord %>%
-  as_tibble(rownames = "var") %>%
-  separate(var, into = c("attitude", "score"))
-
-# Note that we are inverting Dim1 so that greater means more positive attitude.
-
-mca_dim1_mean <- -mean(mca_dim1$`Dim 1`[mca_dim1$score == 3])
-
-mca_dim1 %>%
-  ggplot(aes(-`Dim 1`, attitude, colour = score, size = score)) +
-  geom_vline(xintercept = mca_dim1_mean, linetype = "dashed") +
-  geom_point() +
-  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571")) +
-  labs(
-    x = "Dimension 1 score",
-    y = "Qualities",
-    colour = "Likert score",
-    size = "Likert score"
-  )
-
-ggsave("img/dim1.png", width = 7, height = 5)
-```
-
-```{r mca-dim2}
-attitudes_mca$var$coord %>%
-  as_tibble(rownames = "var") %>%
-  separate(var, into = c("attitude", "score")) %>%
-  ggplot(aes(`Dim 2`, attitude, colour = score, size = score)) +
-  geom_point() +
-  scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571"))
-```
-
-
 ## Understand
-
-```{r dim-1}
-lang_use$dim_1 <- -attitudes_dims[, 1]
-```
 
 ```{r understand-bm-prior}
 get_prior(
   understand ~
     language * dim_1,
-  data = lang_use,
+  data = emilianto_attitude,
   family = cumulative()
 )
 
@@ -610,7 +476,7 @@ understand_priors <- c(
 understand_pchek <- brm(
   understand ~
     language * dim_1,
-  data = lang_use,
+  data = emilianto_attitude,
   family = cumulative(),
   prior = understand_priors,
   sample_prior = "only",
@@ -619,7 +485,7 @@ understand_pchek <- brm(
   file = "./data/rds/understand_pchek"
 )
 
-conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(lang_use, "language"), categorical = TRUE)
+conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(emilianto_attitude, "language"), categorical = TRUE)
 ```
 
 
@@ -627,7 +493,7 @@ conditional_effects(understand_pchek, effects = "dim_1", conditions = make_condi
 understand_bm <- brm(
   understand ~
     language * dim_1,
-  data = lang_use,
+  data = emilianto_attitude,
   family = cumulative(),
   prior = understand_priors,
   backend = "cmdstanr",
@@ -644,7 +510,7 @@ summary(understand_bm, prob = 0.7)
 
 
 ```{r understand-bm-cond}
-ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(lang_use, "language"), plot = FALSE)
+ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(emilianto_attitude, "language"), plot = FALSE)
 ```
 
 ```{r understand-bm-cond-plot}
@@ -670,7 +536,7 @@ ggsave("img/understand-brm.png", width = 7, height = 5)
 speak_bm <- brm(
   speak ~
     language * dim_1,
-  data = lang_use,
+  data = emilianto_attitude,
   family = cumulative(),
   # Same priors as understand_bm
   prior = understand_priors,
@@ -713,7 +579,7 @@ ggsave("img/speak-brm.png", width = 7, height = 5)
 rw_bm <- brm(
   read_write ~
     dim_1,
-  data = lang_use %>% filter(language == "Emilian"),
+  data = emilianto_attitude %>% filter(language == "Emilian"),
   family = bernoulli(),
   # Same priors as understand_bm
   prior = understand_priors,
@@ -736,28 +602,28 @@ conditional_effects(rw_bm, effects = "dim_1")
 ## Mean competence
 
 ```{r meanc}
-lang_use %>%
+emilianto_attitude %>%
   ggplot(aes(mean_comp)) +
   geom_density() +
   geom_rug()
 ```
 
 ```{r meanc-jitter}
-lang_use %>%
+emilianto_attitude %>%
   ggplot(aes(language, mean_comp)) +
   geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
   expand_limits(y = 0)
 ```   
 
 ```{r mean-jitter-dim}
-lang_use %>%
+emilianto_attitude %>%
   ggplot(aes(language, mean_comp, colour = dim_1)) +
   geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
   expand_limits(y = 0)
 ```
 
 ```{r meanc-dim1}
-lang_use %>%
+emilianto_attitude %>%
   ggplot(aes(dim_1, mean_comp)) +
   geom_point() +
   facet_grid(~ language)
@@ -768,7 +634,7 @@ mean_comp_bm <- brm(
   mean_comp ~
     language *
     dim_1,
-  data = lang_use,
+  data = emilianto_attitude,
   family = zero_one_inflated_beta(),
   backend = "cmdstanr",
   cores = 4,
@@ -780,15 +646,6 @@ mean_comp_bm
 
 ```{r meanc-bm-cond}
 conditional_effects(mean_comp_bm, effects = "dim_1:language")
-```
-
-## Dim-1 and age
-
-```{r dim1-age}
-lang_use %>%
-  ggplot(aes(age, dim_1)) +
-  geom_point() +
-  geom_smooth(method = "lm")
 ```
 
 
@@ -952,17 +809,8 @@ for (column in columns) {
 }
 ```
 
-```{r passive-active-prop}
-competence <- emilianto %>%
-  filter(gender != "LGBTQ+") %>%
-  pivot_longer(c(passive_prop, active_prop), names_to = "competence", values_to = "proportion") %>%
-  mutate(
-    competence = recode_factor(competence, "passive_prop" = "passive", "active_prop" = "active")
-  )
-```
-
 ```{r pap-plot}
-competence %>%
+pa_spaces %>%
   ggplot(aes(gender, proportion, fill = gender)) +
   geom_hline(yintercept = 0, size = 0.25) +
   geom_hline(yintercept = 1, size = 0.25) +
@@ -970,16 +818,16 @@ competence %>%
   geom_boxplot(width = 0.05, fill = "black", colour = "black") +
   stat_summary(colour = "white", fun = "median", geom = "point") +
   ylim(0, 1) +
-  facet_grid(competence ~ language, labeller = as_labeller(list("competence" = c("a", "b")))) +
+  facet_grid(spaces ~ language, labeller = as_labeller(list("competence" = c("a", "b")))) +
   scale_fill_brewer(type = "qual", palette = "Dark2") +
   labs(
-    y = "Competence (proportion)",
+    y = "Spaces (proportion)",
     x = "Gender"
   ) +
   theme_minimal(base_size = 16) +
   theme(legend.position = "none")
 
-ggsave("./img/competence.png", width = 7, height = 5)
+ggsave("./img/spaces.png", width = 7, height = 5)
 ```
 
 
