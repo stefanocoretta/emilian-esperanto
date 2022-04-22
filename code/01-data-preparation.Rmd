@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 knitr::opts_knit$set(root.dir = here::here())
 library(tidyverse)
 theme_set(theme_light())
+library(googlesheets4)
 library(magrittr)
 library(FactoMineR)
 library(factoextra)
@@ -23,6 +24,10 @@ We first read the Emilian and Esperanto questionnaire data. Tidy column names ar
 # Emilian and Esperanto headings
 headings_em <- read_csv("data/raw/headings-emilian.csv")
 headings_eo <- read_csv("data/raw/headings-esperanto.csv")
+space_type <- read_sheet("https://docs.google.com/spreadsheets/d/1hYs92kMU34zPi2Ibfj9PmqjtsnGJqvqQOeplZVg0JGQ/edit?usp=sharing", 3) %>%
+  filter(
+    !is.na(space_type)
+  )
 
 emilian <- read_csv("data/raw/emilian-clean.csv", skip = 1, col_names = headings_em$new, na = c("", "NA", "na"))
 
@@ -75,7 +80,8 @@ emilianto <- bind_rows(
     ),
     # Recode passive and active competence spaces
     across(ends_with(c("_read", "_write")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0)),
-    across(starts_with(c("with_", "at_", "in_", "about_")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0))
+    across(starts_with(c("with_", "at_", "in_", "about_")), function(.x) ifelse(str_detect(.x, "^Yes"), 1, 0)),
+    across(ends_with(c("how_often")), function(.x) ifelse(str_detect(.x, "Never"), 0, 1)),
   ) %>%
 
   #### Passive and active competence spaces ####
@@ -83,7 +89,12 @@ emilianto <- bind_rows(
   mutate(
     # Create passive and active competence spaces counts
     passive_spaces = sum(c_across(ends_with("_read")), na.rm = TRUE),
-    active_spaces = sum(c_across(starts_with(c("with_", "at_", "in_", "about_")) | ends_with("_write")), na.rm = TRUE)
+    active_spaces = sum(c_across(starts_with(c("with_", "at_", "in_", "about_")) | ends_with("_write")), na.rm = TRUE),
+    physical_spaces = sum(c_across(space_type$new_eo[space_type$space_type == "physical"]), na.rm = TRUE),
+    press_spaces = sum(c_across(space_type$new_eo[space_type$space_type == "press"]), na.rm = TRUE),
+    media_spaces = sum(c_across(space_type$new_eo[space_type$space_type == "media"]), na.rm = TRUE),
+    virtual_spaces = sum(c_across(space_type$new_eo[space_type$space_type == "virtual"]), na.rm = TRUE),
+    other_spaces = sum(c_across(space_type$new_eo[space_type$space_type == "other"]), na.rm = TRUE)
   ) %>%
   ungroup() %>%
   mutate(
@@ -92,7 +103,13 @@ emilianto <- bind_rows(
     # Proportion of "yes" out of 13 passive spaces
     passive_prop = passive_spaces / 13,
     # Proportion of "yes" out of 42 active spaces
-    active_prop = active_spaces / 42
+    active_prop = active_spaces / 42,
+    # Spaces types
+    physical_tprop = physical_spaces / 23,
+    press_tprop = press_spaces / 12,
+    media_tprop = media_spaces / 2,
+    virtual_tprop = virtual_spaces / 11,
+    other_tprop = other_spaces / 2
   ) %>%
   
   #### Mean competence ####
@@ -118,6 +135,15 @@ pa_spaces <- emilianto %>%
   pivot_longer(c(passive_prop, active_prop), names_to = "spaces", values_to = "proportion") %>%
   mutate(
     spaces = recode_factor(spaces, "passive_prop" = "passive", "active_prop" = "active")
+  )
+
+#### Spaces types long data table ####
+ty_spaces <- emilianto %>%
+  filter(gender != "LGBTQ+") %>%
+  pivot_longer(ends_with("_tprop"), names_to = "types", values_to = "proportion") %>%
+  mutate(
+    types = str_remove(types, "_tprop"),
+    types = factor(types, levels = c("physical", "press", "media", "virtual", "other"))
   )
 ```
 
@@ -217,5 +243,6 @@ saveRDS(emilianto, "data/rds/emilianto.rds")
 saveRDS(emilianto_attitude, "data/rds/emilianto_attitude.rds")
 saveRDS(attitudes, "data/rds/attitudes.rds")
 saveRDS(pa_spaces, "data/rds/pa_spaces.rds")
+saveRDS(ty_spaces, "data/rds/ty_spaces.rds")
 ```
 

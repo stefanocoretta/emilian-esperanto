@@ -29,6 +29,7 @@ emilianto <- readRDS("data/rds/emilianto.rds")
 emilianto_attitude <- readRDS("data/rds/emilianto_attitude.rds")
 attitudes <- readRDS("data/rds/attitudes.rds")
 pa_spaces <- readRDS("data/rds/pa_spaces.rds")
+ty_spaces <- readRDS("data/rds/ty_spaces.rds")
 ```
 
 
@@ -878,4 +879,23 @@ pa_spaces %>%
 ggsave("./img/spaces.png", width = 7, height = 5)
 ```
 
+```{r ty-plot}
+ty_spaces %>%
+  ggplot(aes(types, proportion, fill = types)) +
+  geom_hline(yintercept = 0, size = 0.25) +
+  geom_hline(yintercept = 1, size = 0.25) +
+  geom_violin(colour = NA) +
+  geom_boxplot(width = 0.05, fill = "black", colour = "black") +
+  stat_summary(colour = "white", fun = "median", geom = "point") +
+  ylim(0, 1) +
+  facet_grid(~ language) +
+  scale_fill_brewer(type = "qual", palette = "Dark2") +
+  labs(
+    y = "Total spaces (proportion)",
+    x = "Space type"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none")
 
+ggsave("./img/space-types.png", width = 7, height = 5)
+```
