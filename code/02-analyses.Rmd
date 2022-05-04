@@ -20,6 +20,7 @@ library(brms)
 library(rnaturalearth)
 library(sf)
 library(tidygeocoder)
+library(HH)
 ```
 
 # Read data
@@ -819,6 +820,23 @@ rw_rur_bm
 
 ```{r rw-rur-cond}
 conditional_effects(rw_rur_bm, "read_write:ru_ur")
+```
+
+# Diverging stacked bar chart
+
+```{r div-stacked}
+emilianto_lik <- emilianto_attitude %>%
+  dplyr::select(language, educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "quality", values_to = "score") %>%
+  count(language, quality, score) %>%
+  pivot_wider(names_from = "score", values_from = n)
+
+likert(
+  quality ~ . | language,
+  emilianto_lik,
+  as.percent = TRUE,
+  main = "Diverging staked bar chart"
+)
 ```
 
 # Tables and plots included in the paper
