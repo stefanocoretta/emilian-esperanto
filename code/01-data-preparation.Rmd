@@ -124,7 +124,7 @@ emilianto <- bind_rows(
 
 #### Attitudes data for MCA ####
 attitudes <- emilianto %>%
-  select(educated:familiar) %>%
+  dplyr::select(educated:familiar) %>%
   drop_na()
 
 
