@@ -917,3 +917,39 @@ ty_spaces %>%
 
 ggsave("./img/space-types.png", width = 7, height = 5)
 ```
+
+```{r ty-perc}
+ty_spaces %>%
+  dplyr::select(language, id) %>%
+  distinct() %>%
+  count(language)
+
+n_spaces <- c(42, 2, 2, 13, 23, 12, 11)
+
+n_spaces_em <- n_spaces * 434
+n_spaces_eo <- n_spaces * 150
+
+ty_spaces_count <- ty_spaces %>%
+  dplyr::select(language, id, ends_with("_spaces")) %>%
+  distinct() %>%
+  pivot_longer(passive_spaces:other_spaces, names_to = "space_type", values_to = "count") %>%
+  group_by(language, space_type) %>%
+  summarise(
+    total_count = sum(count),
+    .groups = "drop"
+  )
+
+ty_spaces_count$n_spaces <- c(n_spaces_em, n_spaces_eo)
+
+ty_spaces_perc <- ty_spaces_count %>%
+  mutate(
+    perc = round((total_count / n_spaces) * 100)
+  ) %>%
+  mutate(space_type = str_remove(space_type, "_spaces"))
+
+ty_spaces_perc %>%
+  ggplot(aes(space_type, perc)) +
+  geom_bar(stat = "identity") +
+  facet_grid(~ language)
+```
+
