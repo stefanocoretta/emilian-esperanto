@@ -946,10 +946,20 @@ ty_spaces_perc <- ty_spaces_count %>%
     perc = round((total_count / n_spaces) * 100)
   ) %>%
   mutate(space_type = str_remove(space_type, "_spaces"))
+```
 
+```{r}
 ty_spaces_perc %>%
-  ggplot(aes(space_type, perc)) +
+  filter(!(space_type %in% c("passive", "active"))) %>%
+  mutate(
+    space_type = factor(space_type, levels = c("physical", "media", "press", "virtual", "other"))
+  ) %>%
+  ggplot(aes(space_type, perc, fill = space_type)) +
   geom_bar(stat = "identity") +
-  facet_grid(~ language)
+  scale_fill_brewer(type = "qual", palette = "Dark2") +
+  facet_grid(~ language) +
+  ylim(0, 100) +
+  labs(x = "Space type", y = "Percent") +
+  theme(legend.position = "none")
 ```
 
