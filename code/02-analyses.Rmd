@@ -450,7 +450,7 @@ if (file.exists("./data/raw/geo.csv")) {
 europe <- ne_countries(continent = "Europe", returnclass = "sf", scale = "medium")
 ```
 
-```{r emilian}
+```{r emilian-map}
 ggplot() +
   geom_sf(data = europe) +
   geom_point(data = geo, aes(long, lat)) +
@@ -876,6 +876,32 @@ for (column in columns) {
 }
 ```
 
+```{r tables-3}
+columns <- c("gender", "age_2", "profession_2", "languages_family_2")
+
+emilianto_50 <- emilianto %>%
+  mutate(
+    und_speak = case_when(
+      understand %in% c("50/50", "G", "VG") ~ ">50",
+      speak %in% c("50/50", "G", "VG") ~ ">50",
+      TRUE ~ "<50"
+    )
+  )
+
+for (column in columns) {
+ emilianto_50 %>%
+    group_by(language) %>%
+    add_count(name = "tot") %>%
+    ungroup() %>%
+    count(.data[[column]], und_speak, language, tot) %>%
+    mutate(
+      prop = round((n / tot) * 100, 1)
+    ) %>%
+    pivot_wider(names_from = .data[[column]], values_from = c(n, prop)) %>%
+    print()
+}
+```
+
 ```{r pap-plot}
 pa_spaces %>%
   ggplot(aes(gender, proportion, fill = gender)) +
@@ -948,7 +974,7 @@ ty_spaces_perc <- ty_spaces_count %>%
   mutate(space_type = str_remove(space_type, "_spaces"))
 ```
 
-```{r}
+```{r ty-spaces-plot}
 ty_spaces_perc %>%
   filter(!(space_type %in% c("passive", "active"))) %>%
   mutate(
@@ -961,5 +987,7 @@ ty_spaces_perc %>%
   ylim(0, 100) +
   labs(x = "Space type", y = "Percent") +
   theme(legend.position = "none")
+
+ggsave("./img/space-types-perc.png", width = 7, height = 5)
 ```
 
