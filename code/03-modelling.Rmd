@@ -242,54 +242,6 @@ conditional_effects(rw_bm, effects = "spaces_prop:dim_1")
 conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 ```
 
-## Spaces
-
-```{r spaces-bm}
-a_spaces <- pa_spaces %>%
-  filter(spaces == "active") %>%
-  mutate(
-    speak_bi = ifelse(speak %in% c("V", "VG"), "high", "low"),
-    speak_bi = factor(speak_bi, levels = c("low", "high")),
-    proportion_10 = proportion * 10
-  )
-
-spaces_bm <- brm(
-  speak_bi ~
-    language * proportion_10,
-  data = a_spaces,
-  family = bernoulli(),
-  # Same priors as understand_bm
-  prior = understand_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/cache/spaces_bm"
-)
-```
-
-```{r spaces-bm-sum}
-spaces_bm
-```
-
-```{r spaces-bm-cond}
-spbc <- conditional_effects(spaces_bm, "proportion_10:language")
-```
-
-```{r spaces-bm-cond-plot}
-plot(spbc, plot = FALSE)[[1]] +
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_colour_brewer(type = "qual") +
-  scale_fill_brewer(type = "qual") +
-  labs(
-    x = "Spaces (score)",
-    y = "Speaking competence (low vs high)",
-    caption = str_wrap("Speaking competence was binned (low = NO/AL/50:50, high = G/VG.")
-  )
-
-ggsave("img/spaces-brm.png", width = 7, height = 5)
-```
-
-
 ## Mean competence
 
 ```{r meanc}
