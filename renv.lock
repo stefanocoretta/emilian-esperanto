@@ -2374,6 +2374,20 @@
       ],
       "Hash": "5e3c5dc0b071b21fa128676560dbe94d"
     },
+    "raster": {
+      "Package": "raster",
+      "Version": "3.6-20",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods",
+        "sp",
+        "terra"
+      ],
+      "Hash": "ebebd9f0f203a129eb2da96470191b82"
+    },
     "readr": {
       "Package": "readr",
       "Version": "2.1.4",
@@ -2928,6 +2942,18 @@
       ],
       "Hash": "fd792ceac77f96b647fa8d6e1788969a"
     },
+    "terra": {
+      "Package": "terra",
+      "Version": "1.7-29",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods"
+      ],
+      "Hash": "89c24bf35c961e047df79dde2eb69224"
+    },
     "testthat": {
       "Package": "testthat",
       "Version": "3.1.8",
@@ -3142,6 +3168,18 @@
         "Rcpp"
       ],
       "Hash": "422376fe53419adcde4710d43acbcdd0"
+    },
+    "usdm": {
+      "Package": "usdm",
+      "Version": "1.1-18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "methods",
+        "raster",
+        "sp"
+      ],
+      "Hash": "18221e7e706e19430606bdf40a3bb2b2"
     },
     "utf8": {
       "Package": "utf8",
