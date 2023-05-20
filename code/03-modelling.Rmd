@@ -77,7 +77,7 @@ understand_pchek <- brm(
   sample_prior = "only",
   backend = "cmdstanr",
   cores = 4,
-  file = "./data/rds/understand_pchek"
+  file = "./data/cache/understand_pchek"
 )
 
 conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(emilianto_attitude, "language"), categorical = TRUE)
@@ -94,7 +94,7 @@ understand_bm <- brm(
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/rds/understand_bm"
+  file = "./data/cache/understand_bm"
 )
 ```
 
@@ -138,7 +138,7 @@ speak_bm <- brm(
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/rds/speak_bm"
+  file = "./data/cache/speak_bm"
 )
 ```
 
@@ -181,7 +181,7 @@ rw_bm <- brm(
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/rds/rw_bm"
+  file = "./data/cache/rw_bm"
 )
 ```
 
@@ -215,7 +215,7 @@ spaces_bm <- brm(
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/rds/spaces_bm"
+  file = "./data/cache/spaces_bm"
 )
 ```
 
@@ -281,7 +281,7 @@ mean_comp_bm <- brm(
   family = zero_one_inflated_beta(),
   backend = "cmdstanr",
   cores = 4,
-  file = "./data/rds/mean_comp_bm"
+  file = "./data/cache/mean_comp_bm"
 )
 
 mean_comp_bm
@@ -334,7 +334,7 @@ understand_rur_bm <- brm(
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/rds/understand_rur_bm"
+  file = "./data/cache/understand_rur_bm"
 )
 
 understand_rur_bm
@@ -370,7 +370,7 @@ speak_rur_bm <- brm(
   prior = understand_rur_priors,
   backend = "cmdstanr",
   cores = 4,
-  file = "./data/rds/speak_rur_bm"
+  file = "./data/cache/speak_rur_bm"
 )
 
 speak_rur_bm
@@ -405,7 +405,7 @@ rw_rur_bm <- brm(
   prior = understand_rur_priors,
   backend = "cmdstanr",
   cores = 4,
-  file = "./data/rds/rw_rur_bm"
+  file = "./data/cache/rw_rur_bm"
 )
 
 rw_rur_bm
