@@ -104,6 +104,7 @@ emilianto <- bind_rows(
     passive_prop = passive_spaces / 13,
     # Proportion of "yes" out of 42 active spaces
     active_prop = active_spaces / 42,
+    spaces_prop = (passive_spaces + active_spaces) / (13 + 42),
     # Spaces types
     physical_tprop = physical_spaces / 23,
     press_tprop = press_spaces / 12,
