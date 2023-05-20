@@ -821,7 +821,6 @@ rw_rur_bm
 ```{r rw-rur-cond}
 conditional_effects(rw_rur_bm, "read_write:ru_ur")
 ```
-
 # Diverging stacked bar chart
 
 ```{r div-stacked}
