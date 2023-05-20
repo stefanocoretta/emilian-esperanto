@@ -130,7 +130,7 @@ ggsave("img/understand-brm.png", width = 7, height = 5)
 ```{r speak-bm}
 speak_bm <- brm(
   speak ~
-    language * dim_1,
+    language * dim_1 * spaces_prop,
   data = emilianto_attitude,
   family = cumulative(),
   # Same priors as understand_bm
@@ -147,6 +147,30 @@ speak_bm
 summary(speak_bm, prob = 0.4)
 ```
 
+
+```{r}
+conditions <- expand.grid(
+  dim_1 = c(-2.5, -1.5, 0, 1.5),
+  language = c("Emilian", "Esperanto")
+)
+
+rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
+
+sbm_cond_sp <- conditional_effects(speak_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
+plot(sbm_cond_sp, facet_args = list(ncol = 4))
+```
+
+```{r}
+conditions <- expand.grid(
+  spaces_prop = c(0, 0.25, 0.5, 0.75, 1),
+  language = c("Emilian", "Esperanto")
+)
+
+rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
+
+sbm_cond_dim <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
+plot(sbm_cond_dim, facet_args = list(ncol = 5))
+```
 
 ```{r speak-bm-cond}
 sbc <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
