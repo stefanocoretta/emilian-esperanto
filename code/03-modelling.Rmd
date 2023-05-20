@@ -21,6 +21,7 @@ library(rnaturalearth)
 library(sf)
 library(tidygeocoder)
 library(HH)
+library(usdm)
 ```
 
 # Read data
@@ -33,6 +34,22 @@ pa_spaces <- readRDS("data/rds/pa_spaces.rds")
 ty_spaces <- readRDS("data/rds/ty_spaces.rds")
 ```
 
+
+# Checks
+
+```{r vif}
+eea <- emilianto_attitude %>% dplyr::select(dim_1, passive_prop, active_prop)
+vif(as.data.frame(eea))
+cor(emilianto_attitude$passive_prop, emilianto_attitude$active_prop, method = "spearman")
+
+eea <- emilianto_attitude %>% dplyr::select(dim_1, spaces_prop)
+vif(as.data.frame(eea))
+cor(emilianto_attitude$dim_1, emilianto_attitude$spaces_prop, method = "spearman")
+```
+
+Since `passive_prop` and `active_prop` have a somewhat high correlation (about 0.7), we decided to merge active and passive spaces into a single measure of spaces proportion `spaces_prop`.
+
+The correlation between `spaces_prop` and `dim_1` is 0.26. The VIF is very close to 1. We believe it is safe to include both variables in the model.
 
 # Modelling
 
