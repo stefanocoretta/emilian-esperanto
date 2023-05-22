@@ -58,7 +58,7 @@ The correlation between `spaces_prop` and `dim_1` is 0.26. The VIF is very close
 ```{r understand-bm-prior}
 get_prior(
   understand ~
-    language * dim_1,
+    language * dim_1 * spaces_prop,
   data = emilianto_attitude,
   family = cumulative()
 )
@@ -80,7 +80,6 @@ understand_pchek <- brm(
   file = "./data/cache/understand_pchek"
 )
 
-conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(emilianto_attitude, "language"), categorical = TRUE)
 ```
 
 
@@ -100,10 +99,9 @@ understand_bm <- brm(
 
 ```{r understand-bm-sum}
 understand_bm
-summary(understand_bm, prob = 0.7)
 ```
 
-```{r}
+```{r ubm-cond-spaces}
 conditions <- expand.grid(
   dim_1 = c(-2.5, -1.5, 0, 1.5),
   language = c("Emilian", "Esperanto")
@@ -113,9 +111,11 @@ rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond_
 
 ubm_cond_sp <- conditional_effects(understand_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_sp, facet_args = list(ncol = 4))
+
+ggsave("img/compr-brm-sp.png")
 ```
 
-```{r}
+```{r ubm-cond-dim}
 conditions <- expand.grid(
   spaces_prop = c(0, 0.25, 0.5, 0.75, 1),
   language = c("Emilian", "Esperanto")
@@ -125,26 +125,8 @@ rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond_
 
 ubm_cond_dim <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_dim, facet_args = list(ncol = 5))
-```
 
-```{r understand-bm-cond}
-ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(emilianto_attitude, "language"), plot = FALSE)
-```
-
-```{r understand-bm-cond-plot}
-plot(ubc, plot = FALSE)[[1]] +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  scale_fill_brewer(type = "div", palette = "PRGn") +
-  scale_color_brewer(type = "div", palette = "PRGn") +
-  labs(
-    x = "Attitude (MCA Dimension 1)",
-    y = "Probability",
-    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
-    colour = "Understand\ncompetence",
-    fill = "Understand\ncompetence"
-  )
-
-ggsave("img/understand-brm.png", width = 7, height = 5)
+ggsave("img/compr-brm-dim.png")
 ```
 
 
@@ -167,11 +149,10 @@ speak_bm <- brm(
 
 ```{r speak-bm-sum}
 speak_bm
-summary(speak_bm, prob = 0.4)
 ```
 
 
-```{r}
+```{r sbm-cond-spaces}
 conditions <- expand.grid(
   dim_1 = c(-2.5, -1.5, 0, 1.5),
   language = c("Emilian", "Esperanto")
@@ -181,9 +162,11 @@ rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond_
 
 sbm_cond_sp <- conditional_effects(speak_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
 plot(sbm_cond_sp, facet_args = list(ncol = 4))
+
+ggsave("img/speak-brm-sp.png")
 ```
 
-```{r}
+```{r sbm-cond-dim}
 conditions <- expand.grid(
   spaces_prop = c(0, 0.25, 0.5, 0.75, 1),
   language = c("Emilian", "Esperanto")
@@ -193,25 +176,8 @@ rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond_
 
 sbm_cond_dim <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
 plot(sbm_cond_dim, facet_args = list(ncol = 5))
-```
 
-```{r speak-bm-cond}
-sbc <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
-```
-
-```{r speak-bm-cond-plot}
-plot(sbc, plot = FALSE)[[1]] +
-  scale_fill_brewer(type = "div", palette = "PRGn") +
-  scale_color_brewer(type = "div", palette = "PRGn") +
-  labs(
-    x = "Attitude (MCA Dimension 1)",
-    y = "Probability",
-    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
-    colour = "Speaking\ncompetence",
-    fill = "Speaking\ncompetence"
-  )
-
-ggsave("img/speak-brm.png", width = 7, height = 5)
+ggsave("img/speak-brm-dim.png")
 ```
 
 
@@ -239,6 +205,7 @@ rw_bm
 
 ```{r rw-bm-cond}
 conditional_effects(rw_bm, effects = "spaces_prop:dim_1")
+ggsave("img/rw-brm-spaces.png")
 conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 ```
 
