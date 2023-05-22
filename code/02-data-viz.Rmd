@@ -838,6 +838,18 @@ likert(
 )
 ```
 
+# Vitality
+
+```{r competence}
+emilianto %>%
+  pivot_longer(all_of(c("understand", "speak")), names_to = "competence", values_to = "level") %>%
+  mutate(competence = factor(competence, levels = c("understand", "speak"))) %>%
+  ggplot(aes(competence, fill = level)) +
+  geom_bar(position = "fill") +
+  facet_grid(~ language)
+```
+
+
 # Tables and plots included in the paper
 
 ```{r tables}
