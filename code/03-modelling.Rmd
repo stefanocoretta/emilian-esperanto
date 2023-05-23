@@ -209,6 +209,62 @@ ggsave("img/rw-brm-spaces.png")
 conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 ```
 
+## Age
+
+```{r understand-bm-age}
+understand_bm_age <- brm(
+  understand ~
+    language * age,
+  data = emilianto_attitude,
+  family = cumulative(),
+  # Same priors as understand_bm
+  prior = understand_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  threads = threading(2),
+  file = "./data/cache/understand_bm_age"
+)
+```
+
+```{r understand-cond-age}
+conditions <- expand.grid(
+  language = c("Emilian", "Esperanto")
+)
+
+rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
+
+ubm_cond_age <- conditional_effects(understand_bm_age, effects = "age", categorical = TRUE, conditions = conditions)
+plot(ubm_cond_age, facet_args = list(ncol = 5))
+```
+
+
+```{r speak-bm-age}
+speak_bm_age <- brm(
+  speak ~
+    language * age,
+  data = emilianto_attitude,
+  family = cumulative(),
+  # Same priors as understand_bm
+  prior = understand_priors,
+  backend = "cmdstanr",
+  cores = 4,
+  threads = threading(2),
+  file = "./data/cache/speak_bm_age"
+)
+```
+
+```{r speak-bm-cond-age}
+conditions <- expand.grid(
+  language = c("Emilian", "Esperanto")
+)
+
+rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
+
+sbm_cond_age <- conditional_effects(speak_bm_age, effects = "age", categorical = TRUE, conditions = conditions)
+plot(sbm_cond_age, facet_args = list(ncol = 5))
+```
+
+
 ## Mean competence
 
 ```{r meanc}
