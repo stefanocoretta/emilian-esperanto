@@ -821,33 +821,6 @@ rw_rur_bm
 ```{r rw-rur-cond}
 conditional_effects(rw_rur_bm, "read_write:ru_ur")
 ```
-# Diverging stacked bar chart
-
-```{r div-stacked}
-emilianto_lik <- emilianto_attitude %>%
-  dplyr::select(language, educated:familiar) %>%
-  pivot_longer(educated:familiar, names_to = "quality", values_to = "score") %>%
-  count(language, quality, score) %>%
-  pivot_wider(names_from = "score", values_from = n)
-
-likert(
-  quality ~ . | language,
-  emilianto_lik,
-  as.percent = TRUE,
-  main = "Diverging staked bar chart"
-)
-```
-
-# Vitality
-
-```{r competence}
-emilianto %>%
-  pivot_longer(all_of(c("understand", "speak")), names_to = "competence", values_to = "level") %>%
-  mutate(competence = factor(competence, levels = c("understand", "speak"))) %>%
-  ggplot(aes(competence, fill = level)) +
-  geom_bar(position = "fill") +
-  facet_grid(~ language)
-```
 
 
 # Tables and plots included in the paper
@@ -911,6 +884,21 @@ for (column in columns) {
     pivot_wider(names_from = .data[[column]], values_from = c(n, prop)) %>%
     print()
 }
+```
+
+```{r competence}
+emilianto %>%
+  pivot_longer(all_of(c("understand", "speak")), names_to = "competence", values_to = "level") %>%
+  mutate(
+    competence = factor(competence, levels = c("understand", "speak"))
+  ) %>%
+  ggplot(aes(competence, fill = level)) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer(type = "div", palette = "PRGn") +
+  facet_grid(~ language) +
+  labs(y = "Proportion")
+
+ggsave("./img/competence.png", width = 7, height = 5)
 ```
 
 ```{r pap-plot}
@@ -1002,3 +990,20 @@ ty_spaces_perc %>%
 ggsave("./img/space-types-perc.png", width = 7, height = 5)
 ```
 
+```{r div-stacked}
+emilianto_lik <- emilianto_attitude %>%
+  dplyr::select(language, educated:familiar) %>%
+  pivot_longer(educated:familiar, names_to = "quality", values_to = "score") %>%
+  count(language, quality, score) %>%
+  pivot_wider(names_from = "score", values_from = n) %>%
+  rename("strong disagree" = `1`, "disagree" = `2`, "neither" = `3`, "agree" = `4`, "strong agree" = `5`)
+
+png("./img/likert.png", width = 7, height = 5, units = "in", res = 600)
+likert(
+  quality ~ . | language,
+  emilianto_lik,
+  as.percent = TRUE,
+  main = ""
+)
+dev.off()
+```
