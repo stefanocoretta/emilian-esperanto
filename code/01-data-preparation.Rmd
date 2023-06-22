@@ -55,8 +55,8 @@ emilianto <- bind_rows(
   mutate(
     # Fix coding error MD+ > MD
     languages_family = ifelse(languages_family == "MD+", "MD", languages_family),
-    # Refactor understand and speak
-    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    # Refactor comprehend and speak
+    comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
     across(educated:familiar, ~ as.ordered(.x)),
     # Recode columns
@@ -99,7 +99,7 @@ emilianto <- bind_rows(
   ungroup() %>%
   mutate(
     # Passive and active spaces proportion
-    passive_spaces = ifelse(understand %in% c("G", "VG"), passive_spaces + 1, passive_spaces),
+    passive_spaces = ifelse(comprehend %in% c("G", "VG"), passive_spaces + 1, passive_spaces),
     # Proportion of "yes" out of 13 passive spaces
     passive_prop = passive_spaces / 13,
     # Proportion of "yes" out of 42 active spaces
@@ -115,7 +115,7 @@ emilianto <- bind_rows(
   
   #### Mean competence ####
   mutate(
-    comp_counts = as.numeric(understand) +
+    comp_counts = as.numeric(comprehend) +
       as.numeric(speak) +
       ifelse(read_write == "Yes", 5, 0),
     mean_comp = comp_counts / 15

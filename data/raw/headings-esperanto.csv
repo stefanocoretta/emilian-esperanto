@@ -16,7 +16,7 @@ col_id,old,new
 15,8. Lingvoj akiritaj unue & de kiu,first_langacq
 16,9. Lingvoj akiritaj poste & de kiu,later_langacq
 17,10. Lingvoj de gepatroj,languages_parents
-18,11. Ĉu vi komprenas parolatan Esperanton?,understand
+18,11. Ĉu vi komprenas parolatan Esperanton?,comprehend
 19,12. Ĉu vi parolas Esperanton?,speak
 20,13. Kun kiu vi parolas esperante (dum via vivo)?,Q13
 21,13.1.a. Familio - Yes aŭ No kaj ilia sekso,with_family

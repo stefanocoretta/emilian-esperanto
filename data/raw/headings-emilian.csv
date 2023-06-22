@@ -18,8 +18,8 @@ col_id,old,new
 17,10. Lingue acquisite piú tardi e da chi,later_langacq
 18,11. Lingue dei genitori,languages_parents_it
 19,Parents languages,languages_parents
-20,12. Capisce l'emiliano parlato?,understand
-21,12.a. Quale varietá?,understand_var
+20,12. Capisce l'emiliano parlato?,comprehend
+21,12.a. Quale varietá?,comprehend_var
 22,13. Parla emiliano?,speak
 23,13.a. Quale varietá?,speak_var
 24,14. Con chi? Risponda solo se ha detto di saper parlare emiliano,Q14
