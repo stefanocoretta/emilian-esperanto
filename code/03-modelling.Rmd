@@ -28,7 +28,11 @@ library(usdm)
 
 ```{r}
 emilianto <- readRDS("data/rds/emilianto.rds")
-emilianto_attitude <- readRDS("data/rds/emilianto_attitude.rds")
+emilianto_attitude <- readRDS("data/rds/emilianto_attitude.rds") %>%
+  mutate(
+    language = factor(language)
+  )
+contrasts(emilianto_attitude$language) <- "contr.sum"
 attitudes <- readRDS("data/rds/attitudes.rds")
 pa_spaces <- readRDS("data/rds/pa_spaces.rds")
 ty_spaces <- readRDS("data/rds/ty_spaces.rds")
@@ -51,54 +55,69 @@ Since `passive_prop` and `active_prop` have a somewhat high correlation (about 0
 
 The correlation between `spaces_prop` and `dim_1` is 0.26. The VIF is very close to 1. We believe it is safe to include both variables in the model.
 
+```{r dim-1}
+emilianto_attitude %>%
+  ggplot(aes(comprehend, dim_1, colour = comprehend)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  facet_grid(~language)
+emilianto_attitude %>%
+  ggplot(aes(speak, dim_1, colour = speak)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  facet_grid(~language)
+```
+
+
 # Modelling
 
-## Understand
+## comprehend
 
-```{r understand-bm-prior}
+```{r comprehend-bm-prior}
 get_prior(
-  understand ~
+  comprehend ~
     language * dim_1 * spaces_prop,
   data = emilianto_attitude,
   family = cumulative()
 )
 
-understand_priors <- c(
+comprehend_priors <- c(
   prior(normal(0, 3), class = Intercept),
   prior(normal(0, 1), class = b)
 )
 
-understand_pchek <- brm(
-  understand ~
-    language * dim_1,
-  data = emilianto_attitude,
-  family = cumulative(),
-  prior = understand_priors,
-  sample_prior = "only",
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/cache/understand_pchek"
-)
-
-```
-
-
-```{r understand-bm}
-understand_bm <- brm(
-  understand ~
+comprehend_pcheck <- brm(
+  comprehend ~
     language * dim_1 * spaces_prop,
   data = emilianto_attitude,
   family = cumulative(),
-  prior = understand_priors,
+  prior = comprehend_priors,
+  sample_prior = "only",
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/comprehend_pcheck"
+)
+
+conditional_effects(comprehend_pcheck, "spaces_prop", conditions = make_conditions(emilianto_attitude, "language", "dim_1"), categorical = TRUE)
+```
+
+
+```{r comprehend-bm}
+comprehend_bm <- brm(
+  comprehend ~
+    language * dim_1 * spaces_prop,
+  data = emilianto_attitude,
+  family = cumulative(),
+  prior = comprehend_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/cache/understand_bm"
+  file = "./data/cache/comprehend_bm"
 )
 ```
 
-```{r understand-bm-sum}
-understand_bm
+```{r comprehend-bm-sum}
+comprehend_bm
 ```
 
 ```{r ubm-cond-spaces}
@@ -109,7 +128,7 @@ conditions <- expand.grid(
 
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
-ubm_cond_sp <- conditional_effects(understand_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
+ubm_cond_sp <- conditional_effects(comprehend_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_sp, facet_args = list(ncol = 4))
 
 ggsave("img/compr-brm-sp.png")
@@ -123,7 +142,7 @@ conditions <- expand.grid(
 
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
-ubm_cond_dim <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
+ubm_cond_dim <- conditional_effects(comprehend_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_dim, facet_args = list(ncol = 5))
 
 ggsave("img/compr-brm-dim.png")
@@ -138,8 +157,8 @@ speak_bm <- brm(
     language * dim_1 * spaces_prop,
   data = emilianto_attitude,
   family = cumulative(),
-  # Same priors as understand_bm
-  prior = understand_priors,
+  # Same priors as comprehend_bm
+  prior = comprehend_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
@@ -189,8 +208,8 @@ rw_bm <- brm(
     dim_1 * spaces_prop,
   data = emilianto_attitude %>% filter(language == "Emilian"),
   family = bernoulli(),
-  # Same priors as understand_bm
-  prior = understand_priors,
+  # Same priors as comprehend_bm
+  prior = comprehend_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
@@ -211,29 +230,29 @@ conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 
 ## Age
 
-```{r understand-bm-age}
-understand_bm_age <- brm(
-  understand ~
+```{r comprehend-bm-age}
+comprehend_bm_age <- brm(
+  comprehend ~
     language * age,
   data = emilianto_attitude,
   family = cumulative(),
-  # Same priors as understand_bm
-  prior = understand_priors,
+  # Same priors as comprehend_bm
+  prior = comprehend_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/cache/understand_bm_age"
+  file = "./data/cache/comprehend_bm_age"
 )
 ```
 
-```{r understand-cond-age}
+```{r comprehend-cond-age}
 conditions <- expand.grid(
   language = c("Emilian", "Esperanto")
 )
 
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
-ubm_cond_age <- conditional_effects(understand_bm_age, effects = "age", categorical = TRUE, conditions = conditions)
+ubm_cond_age <- conditional_effects(comprehend_bm_age, effects = "age", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_age, facet_args = list(ncol = 5))
 ```
 
@@ -244,8 +263,8 @@ speak_bm_age <- brm(
     language * age,
   data = emilianto_attitude,
   family = cumulative(),
-  # Same priors as understand_bm
-  prior = understand_priors,
+  # Same priors as comprehend_bm
+  prior = comprehend_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
@@ -317,54 +336,54 @@ conditional_effects(mean_comp_bm, effects = "dim_1:language")
 
 ## Rural vs urban
 
-### Understand
+### comprehend
 
-```{r understand-rur}
-understand_rur <- emil_rur_clean %>%
-  count(understand, ru_ur) %>%
+```{r comprehend-rur}
+comprehend_rur <- emil_rur_clean %>%
+  count(comprehend, ru_ur) %>%
   group_by(ru_ur) %>%
   mutate(
     ru_ur_prop = n / sum(n)
   ) %>%
   ungroup() %>%
   mutate(
-    understand = factor(understand, ordered = FALSE),
+    comprehend = factor(comprehend, ordered = FALSE),
     ru_ur = factor(ru_ur, levels = c("rural", "urban"))
   )
 ```
 
-```{r understand-rur-priors}
+```{r comprehend-rur-priors}
 get_prior(
   n ~
-    understand * ru_ur,
-  data = understand_rur,
+    comprehend * ru_ur,
+  data = comprehend_rur,
   family = Beta()
 )
 ```
 
-```{r understand-rur-bm}
-understand_rur_priors <- c(
+```{r comprehend-rur-bm}
+comprehend_rur_priors <- c(
   prior(normal(0, 3), class = Intercept),
   prior(normal(0, 1), class = b)
 )
 
-understand_rur_bm <- brm(
+comprehend_rur_bm <- brm(
   ru_ur_prop ~
-    understand * ru_ur,
-  data = understand_rur,
+    comprehend * ru_ur,
+  data = comprehend_rur,
   family = Beta(),
-  prior = understand_rur_priors,
+  prior = comprehend_rur_priors,
   backend = "cmdstanr",
   cores = 4,
   threads = threading(2),
-  file = "./data/cache/understand_rur_bm"
+  file = "./data/cache/comprehend_rur_bm"
 )
 
-understand_rur_bm
+comprehend_rur_bm
 ```
 
-```{r understand-rur-cond}
-conditional_effects(understand_rur_bm, "understand:ru_ur")
+```{r comprehend-rur-cond}
+conditional_effects(comprehend_rur_bm, "comprehend:ru_ur")
 ```
 
 ### Speak
@@ -390,7 +409,7 @@ speak_rur_bm <- brm(
     speak * ru_ur,
   data = speak_rur,
   family = Beta(),
-  prior = understand_rur_priors,
+  prior = comprehend_rur_priors,
   backend = "cmdstanr",
   cores = 4,
   file = "./data/cache/speak_rur_bm"
@@ -425,7 +444,7 @@ rw_rur_bm <- brm(
     read_write * ru_ur,
   data = rw_rur,
   family = Beta(),
-  prior = understand_rur_priors,
+  prior = comprehend_rur_priors,
   backend = "cmdstanr",
   cores = 4,
   file = "./data/cache/rw_rur_bm"
@@ -436,5 +455,73 @@ rw_rur_bm
 
 ```{r rw-rur-cond}
 conditional_effects(rw_rur_bm, "read_write:ru_ur")
+```
+
+## SEM
+
+```{r}
+emilianto_attitude <- emilianto_attitude %>%
+  mutate(
+    dim_1_z = as.vector(scale(dim_1)),
+    spaces_prop_z = as.vector(scale(spaces_prop)),
+    speak_ot = speak
+  )
+
+contrasts(emilianto_attitude$speak_ot) <- "contr.treatment"
+```
+
+
+```{r}
+bf_1 <- bf(speak ~ language * dim_1_z * spaces_prop_z) + cumulative()
+bf_2 <- bf(comprehend ~ language * dim_1_z * spaces_prop_z) + cumulative()
+bf_3 <- bf(dim_1_z ~ language * spaces_prop_z * (speak + comprehend)) + gaussian()
+bf_4 <- bf(spaces_prop_z ~ language * dim_1_z * (speak + comprehend)) + zero_inflated_beta()
+
+sem_1 <- brm(
+  bf_1 + bf_2 + bf_3 + bf_4,
+  data = emilianto_attitude,
+  cores = 4,
+  threads = threading(2),
+  backend = "cmdstanr"
+)
+```
+
+
+```{r}
+bf_1 <- bf(speak_ot ~ language * dim_1_z * spaces_prop_z) + cumulative()
+bf_3 <- bf(dim_1_z ~ language * spaces_prop_z * speak_ot) + gaussian()
+bf_4 <- bf(spaces_prop_z ~ language * dim_1_z * speak_ot) + gaussian()
+
+sem_2_prior <- c(
+  prior(normal(0, 10), class = Intercept),
+  prior(normal(0, 10), class = b),
+  prior(cauchy(0, 1), class = sigma, resp = "spacespropz"),
+  prior(cauchy(0, 1), class = sigma, resp = "dim1z")
+)
+
+sem_2 <- brm(
+  bf_1 + bf_3 + bf_4,
+  data = emilianto_attitude,
+  cores = 4,
+  threads = threading(2),
+  backend = "cmdstanr",
+  file = "data/cache/sem_2",
+  prior = sem_2_prior
+)
+```
+
+```{r}
+summary(sem_2)
+```
+
+```{r}
+conditions <- expand.grid(
+  language = c("Emilian", "Esperanto")
+)
+
+rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
+
+sbm_cond_sp <- conditional_effects(sem_2, effects = c("speak_ot", "dim_1_z"), resp = "spacespropz", conditions = conditions)
+plot(sbm_cond_sp, facet_args = list(ncol = 4))
 ```
 
