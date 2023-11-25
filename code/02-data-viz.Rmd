@@ -888,9 +888,9 @@ for (column in columns) {
 
 ```{r competence}
 emilianto %>%
-  pivot_longer(all_of(c("understand", "speak")), names_to = "competence", values_to = "level") %>%
+  pivot_longer(all_of(c("comprehend", "speak")), names_to = "competence", values_to = "level") %>%
   mutate(
-    competence = factor(competence, levels = c("understand", "speak"))
+    competence = factor(competence, levels = c("comprehend", "speak"))
   ) %>%
   ggplot(aes(competence, fill = level)) +
   geom_bar(position = "fill") +
