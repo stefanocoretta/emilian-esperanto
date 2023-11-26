@@ -98,7 +98,7 @@ emilian %>%
 
 ```{r em-understand}
 emilian %>%
-  ggplot(aes(understand, fill = understand)) +
+  ggplot(aes(comprehend, fill = comprehend)) +
   geom_bar() +
   scale_fill_brewer(type = "div") +
   theme_dark()
@@ -106,28 +106,28 @@ emilian %>%
 
 ```{r em-understand-gender}
 emilian %>%
-  ggplot(aes(understand, fill = gender)) +
+  ggplot(aes(comprehend, fill = gender)) +
   geom_bar()
 
 emilian %>%
-  ggplot(aes(understand, fill = gender)) +
+  ggplot(aes(comprehend, fill = gender)) +
   geom_bar(position = "fill")
 ```
 
 ```{r em-understand-age}
 emilian %>%
-  ggplot(aes(age, fill = understand)) +
+  ggplot(aes(age, fill = comprehend)) +
   geom_histogram(binwidth = 5) +
-  facet_grid(understand ~ .)
+  facet_grid(comprehend ~ .)
 ```
 
 ```{r em-understand-profession}
 emilian %>%
-  ggplot(aes(understand, fill = profession)) +
+  ggplot(aes(comprehend, fill = profession)) +
   geom_bar()
 
 emilian %>%
-  ggplot(aes(understand, fill = profession)) +
+  ggplot(aes(comprehend, fill = profession)) +
   geom_bar(position = "fill")
 ```
 
@@ -212,7 +212,7 @@ emilian %>%
 
 ```{r em-attitude}
 emilian %>%
-  select(educated:familiar) %>%
+  dplyr::select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
   ggplot(aes(as.factor(rating), fill = as.factor(rating))) +
   geom_bar() +
@@ -220,7 +220,7 @@ emilian %>%
   facet_grid(. ~ feature)
 
 emilian %>%
-  select(educated:familiar) %>%
+  dplyr::select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
   ggplot(aes(feature, fill = as.factor(rating))) +
   geom_bar(position = "fill") +
@@ -242,9 +242,9 @@ emil_rur <- emilian %>%
   )
 
 emil_rur_clean <- emil_rur %>%
-  select(id, understand, speak, read_write, educated:familiar, ru_ur) %>%
+  dplyr::select(id, comprehend, speak, read_write, educated:familiar, ru_ur) %>%
   mutate(
-    understand = ordered(understand, levels = c("NO", "AL", "50/50", "G", "VG")),
+    comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
     across(educated:familiar, ~ as.ordered(.x))
   ) %>%
@@ -254,12 +254,12 @@ emil_rur_clean <- emil_rur %>%
 ```{r em-rur-plot}
 emil_rur %>%
   drop_na(ru_ur) %>%
-  ggplot(aes(ru_ur, fill = understand)) +
+  ggplot(aes(ru_ur, fill = comprehend)) +
   geom_bar()
 
 emil_rur %>%
   drop_na(ru_ur) %>%
-  ggplot(aes(ru_ur, fill = understand)) +
+  ggplot(aes(ru_ur, fill = comprehend)) +
   geom_bar(position = "fill")
 ```
 
@@ -322,7 +322,7 @@ esperanto %>%
 
 ```{r eo-understand}
 esperanto %>%
-  ggplot(aes(understand, fill = understand)) +
+  ggplot(aes(comprehend, fill = comprehend)) +
   geom_bar() +
   scale_fill_brewer(type = "div") +
   theme_dark()
@@ -330,28 +330,28 @@ esperanto %>%
 
 ```{r eo-understand-gender}
 esperanto %>%
-  ggplot(aes(understand, fill = gender)) +
+  ggplot(aes(comprehend, fill = gender)) +
   geom_bar()
 
 esperanto %>%
-  ggplot(aes(understand, fill = gender)) +
+  ggplot(aes(comprehend, fill = gender)) +
   geom_bar(position = "fill")
 ```
 
 ```{r eo-understand-age}
 esperanto %>%
-  ggplot(aes(age, fill = understand)) +
+  ggplot(aes(age, fill = comprehend)) +
   geom_histogram(binwidth = 5) +
-  facet_grid(understand ~ .)
+  facet_grid(comprehend ~ .)
 ```
 
 ```{r eo-understand-profession}
 esperanto %>%
-  ggplot(aes(understand, fill = profession)) +
+  ggplot(aes(comprehend, fill = profession)) +
   geom_bar()
 
 esperanto %>%
-  ggplot(aes(understand, fill = profession)) +
+  ggplot(aes(comprehend, fill = profession)) +
   geom_bar(position = "fill")
 ```
 
@@ -406,7 +406,7 @@ esperanto %>%
 
 ```{r eo-attitude}
 esperanto %>%
-  select(educated:familiar) %>%
+  dplyr::select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
   drop_na() %>%
   ggplot(aes(as.factor(rating), fill = as.factor(rating))) +
@@ -415,7 +415,7 @@ esperanto %>%
   facet_grid(. ~ feature)
 
 esperanto %>%
-  select(educated:familiar) %>%
+  dplyr::select(educated:familiar) %>%
   pivot_longer(educated:familiar, names_to = "feature", values_to = "rating") %>%
   drop_na() %>%
   ggplot(aes(feature, fill = as.factor(rating))) +
@@ -457,372 +457,6 @@ ggplot() +
   coord_sf(xlim = c(7, 14), ylim = c(43, 47))
 ```
 
-
-# Modelling
-
-## Understand
-
-```{r understand-bm-prior}
-get_prior(
-  understand ~
-    language * dim_1,
-  data = emilianto_attitude,
-  family = cumulative()
-)
-
-understand_priors <- c(
-  prior(normal(0, 3), class = Intercept),
-  prior(normal(0, 1), class = b)
-)
-
-understand_pchek <- brm(
-  understand ~
-    language * dim_1,
-  data = emilianto_attitude,
-  family = cumulative(),
-  prior = understand_priors,
-  sample_prior = "only",
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/rds/understand_pchek"
-)
-
-conditional_effects(understand_pchek, effects = "dim_1", conditions = make_conditions(emilianto_attitude, "language"), categorical = TRUE)
-```
-
-
-```{r understand-bm}
-understand_bm <- brm(
-  understand ~
-    language * dim_1,
-  data = emilianto_attitude,
-  family = cumulative(),
-  prior = understand_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/rds/understand_bm"
-)
-```
-
-```{r understand-bm-sum}
-understand_bm
-summary(understand_bm, prob = 0.7)
-```
-
-
-```{r understand-bm-cond}
-ubc <- conditional_effects(understand_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(emilianto_attitude, "language"), plot = FALSE)
-```
-
-```{r understand-bm-cond-plot}
-plot(ubc, plot = FALSE)[[1]] +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  scale_fill_brewer(type = "div", palette = "PRGn") +
-  scale_color_brewer(type = "div", palette = "PRGn") +
-  labs(
-    x = "Attitude (MCA Dimension 1)",
-    y = "Probability",
-    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
-    colour = "Understand\ncompetence",
-    fill = "Understand\ncompetence"
-  )
-
-ggsave("img/understand-brm.png", width = 7, height = 5)
-```
-
-
-## Speak
-
-```{r speak-bm}
-speak_bm <- brm(
-  speak ~
-    language * dim_1,
-  data = emilianto_attitude,
-  family = cumulative(),
-  # Same priors as understand_bm
-  prior = understand_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/rds/speak_bm"
-)
-```
-
-```{r speak-bm-sum}
-speak_bm
-summary(speak_bm, prob = 0.4)
-```
-
-
-```{r speak-bm-cond}
-sbc <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = make_conditions(speak_bm, "language"))
-```
-
-```{r speak-bm-cond-plot}
-plot(sbc, plot = FALSE)[[1]] +
-  scale_fill_brewer(type = "div", palette = "PRGn") +
-  scale_color_brewer(type = "div", palette = "PRGn") +
-  labs(
-    x = "Attitude (MCA Dimension 1)",
-    y = "Probability",
-    caption = "Attidude is operationalised as the scores of Dimension 1 from the Multiple Correspondence Analysis.\nGreater values correspond to a more positive attitude.",
-    colour = "Speaking\ncompetence",
-    fill = "Speaking\ncompetence"
-  )
-
-ggsave("img/speak-brm.png", width = 7, height = 5)
-```
-
-
-## Read and write
-
-```{r rw-bm}
-rw_bm <- brm(
-  read_write ~
-    dim_1,
-  data = emilianto_attitude %>% filter(language == "Emilian"),
-  family = bernoulli(),
-  # Same priors as understand_bm
-  prior = understand_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/rds/rw_bm"
-)
-```
-
-```{r rw-bm-sum}
-rw_bm
-```
-
-
-```{r rw-bm-cond}
-conditional_effects(rw_bm, effects = "dim_1")
-```
-
-## Spaces
-
-```{r spaces-bm}
-a_spaces <- pa_spaces %>%
-  filter(spaces == "active") %>%
-  mutate(
-    speak_bi = ifelse(speak %in% c("V", "VG"), "high", "low"),
-    speak_bi = factor(speak_bi, levels = c("low", "high")),
-    proportion_10 = proportion * 10
-  )
-
-spaces_bm <- brm(
-  speak_bi ~
-    language * proportion_10,
-  data = a_spaces,
-  family = bernoulli(),
-  # Same priors as understand_bm
-  prior = understand_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/rds/spaces_bm"
-)
-```
-
-```{r spaces-bm-sum}
-spaces_bm
-```
-
-```{r spaces-bm-cond}
-spbc <- conditional_effects(spaces_bm, "proportion_10:language")
-```
-
-```{r spaces-bm-cond-plot}
-plot(spbc, plot = FALSE)[[1]] +
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_colour_brewer(type = "qual") +
-  scale_fill_brewer(type = "qual") +
-  labs(
-    x = "Spaces (score)",
-    y = "Speaking competence (low vs high)",
-    caption = str_wrap("Speaking competence was binned (low = NO/AL/50:50, high = G/VG.")
-  )
-
-ggsave("img/spaces-brm.png", width = 7, height = 5)
-```
-
-
-## Mean competence
-
-```{r meanc}
-emilianto_attitude %>%
-  ggplot(aes(mean_comp)) +
-  geom_density() +
-  geom_rug()
-```
-
-```{r meanc-jitter}
-emilianto_attitude %>%
-  ggplot(aes(language, mean_comp)) +
-  geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
-  expand_limits(y = 0)
-```   
-
-```{r mean-jitter-dim}
-emilianto_attitude %>%
-  ggplot(aes(language, mean_comp, colour = dim_1)) +
-  geom_jitter(width = 0.2, alpha = 0.5, height = 0) +
-  expand_limits(y = 0)
-```
-
-```{r meanc-dim1}
-emilianto_attitude %>%
-  ggplot(aes(dim_1, mean_comp)) +
-  geom_point() +
-  facet_grid(~ language)
-```
-
-```{r meanc-bm}
-mean_comp_bm <- brm(
-  mean_comp ~
-    language *
-    dim_1,
-  data = emilianto_attitude,
-  family = zero_one_inflated_beta(),
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/rds/mean_comp_bm"
-)
-
-mean_comp_bm
-```
-
-```{r meanc-bm-cond}
-conditional_effects(mean_comp_bm, effects = "dim_1:language")
-```
-
-
-## Rural vs urban
-
-### Understand
-
-```{r understand-rur}
-understand_rur <- emil_rur_clean %>%
-  count(understand, ru_ur) %>%
-  group_by(ru_ur) %>%
-  mutate(
-    ru_ur_prop = n / sum(n)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    understand = factor(understand, ordered = FALSE),
-    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
-  )
-```
-
-```{r understand-rur-priors}
-get_prior(
-  n ~
-    understand * ru_ur,
-  data = understand_rur,
-  family = Beta()
-)
-```
-
-```{r understand-rur-bm}
-understand_rur_priors <- c(
-  prior(normal(0, 3), class = Intercept),
-  prior(normal(0, 1), class = b)
-)
-
-understand_rur_bm <- brm(
-  ru_ur_prop ~
-    understand * ru_ur,
-  data = understand_rur,
-  family = Beta(),
-  prior = understand_rur_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  threads = threading(2),
-  file = "./data/rds/understand_rur_bm"
-)
-
-understand_rur_bm
-```
-
-```{r understand-rur-cond}
-conditional_effects(understand_rur_bm, "understand:ru_ur")
-```
-
-### Speak
-
-```{r speak-rur}
-speak_rur <- emil_rur_clean %>%
-  count(speak, ru_ur) %>%
-  group_by(ru_ur) %>%
-  mutate(
-    ru_ur_prop = n / sum(n)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    speak = factor(speak, ordered = FALSE),
-    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
-  )
-```
-
-
-```{r speak-rur-bm}
-speak_rur_bm <- brm(
-  ru_ur_prop ~
-    speak * ru_ur,
-  data = speak_rur,
-  family = Beta(),
-  prior = understand_rur_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/rds/speak_rur_bm"
-)
-
-speak_rur_bm
-```
-
-```{r speak-rur-cond}
-conditional_effects(speak_rur_bm, "speak:ru_ur")
-```
-
-### Read and write
-
-```{r rw-rur}
-rw_rur <- emil_rur_clean %>%
-  count(read_write, ru_ur) %>%
-  group_by(ru_ur) %>%
-  mutate(
-    ru_ur_prop = n / sum(n)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    ru_ur = factor(ru_ur, levels = c("rural", "urban"))
-  )
-```
-
-
-```{r rw-rur-bm}
-rw_rur_bm <- brm(
-  ru_ur_prop ~
-    read_write * ru_ur,
-  data = rw_rur,
-  family = Beta(),
-  prior = understand_rur_priors,
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/rds/rw_rur_bm"
-)
-
-rw_rur_bm
-```
-
-```{r rw-rur-cond}
-conditional_effects(rw_rur_bm, "read_write:ru_ur")
-```
-
-
 # Tables and plots included in the paper
 
 ```{r tables}
@@ -847,7 +481,7 @@ columns <- c("gender", "age_2", "profession_2", "languages_family_2")
 for (column in columns) {
   emilianto %>%
     filter(
-      understand %in% c("50/50", "G", "VG"),
+      comprehend %in% c("50/50", "G", "VG"),
       speak %in% c("50/50", "G", "VG")
     ) %>%
     group_by(language) %>%
@@ -866,7 +500,7 @@ columns <- c("gender", "age_2", "profession_2", "languages_family_2")
 emilianto_50 <- emilianto %>%
   mutate(
     und_speak = case_when(
-      understand %in% c("50/50", "G", "VG") ~ ">50",
+      comprehend %in% c("50/50", "G", "VG") ~ ">50",
       speak %in% c("50/50", "G", "VG") ~ ">50",
       TRUE ~ "<50"
     )

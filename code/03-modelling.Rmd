@@ -338,6 +338,33 @@ conditional_effects(mean_comp_bm, effects = "dim_1:language")
 
 ### comprehend
 
+```{r emilian}
+emilian <- emilianto %>%
+  filter(language == "Emilian")
+```
+
+```{r em-rur}
+emil_rur <- emilian %>%
+  mutate(
+    ru_ur = ifelse(
+      str_detect(birth_place, "-RU"), "rural",
+      ifelse(
+        str_detect(birth_place, "-UR"), "urban",
+        NA
+      )
+    )
+  )
+
+emil_rur_clean <- emil_rur %>%
+  dplyr::select(id, comprehend, speak, read_write, educated:familiar, ru_ur) %>%
+  mutate(
+    comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
+    speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
+    across(educated:familiar, ~ as.ordered(.x))
+  ) %>%
+ drop_na()
+```
+
 ```{r comprehend-rur}
 comprehend_rur <- emil_rur_clean %>%
   count(comprehend, ru_ur) %>%
@@ -471,7 +498,7 @@ contrasts(emilianto_attitude$speak_ot) <- "contr.treatment"
 ```
 
 
-```{r}
+```{r eval=FALSE}
 bf_1 <- bf(speak ~ language * dim_1_z * spaces_prop_z) + cumulative()
 bf_2 <- bf(comprehend ~ language * dim_1_z * spaces_prop_z) + cumulative()
 bf_3 <- bf(dim_1_z ~ language * spaces_prop_z * (speak + comprehend)) + gaussian()
@@ -487,7 +514,7 @@ sem_1 <- brm(
 ```
 
 
-```{r}
+```{r eval=FALSE}
 bf_1 <- bf(speak_ot ~ language * dim_1_z * spaces_prop_z) + cumulative()
 bf_3 <- bf(dim_1_z ~ language * spaces_prop_z * speak_ot) + gaussian()
 bf_4 <- bf(spaces_prop_z ~ language * dim_1_z * speak_ot) + gaussian()
@@ -510,11 +537,11 @@ sem_2 <- brm(
 )
 ```
 
-```{r}
+```{r eval=FALSE}
 summary(sem_2)
 ```
 
-```{r}
+```{r eval=FALSE}
 conditions <- expand.grid(
   language = c("Emilian", "Esperanto")
 )
