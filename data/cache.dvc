@@ -1,5 +1,6 @@
 outs:
-- md5: 23aac3351405c219311c64b6b120f4cf.dir
-  size: 2138145
-  nfiles: 7
+- md5: 332a937477e4492220dac96450760479.dir
+  size: 3564635
+  nfiles: 10
   path: cache
+  hash: md5

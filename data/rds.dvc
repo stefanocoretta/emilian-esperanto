@@ -1,5 +1,6 @@
 outs:
-- md5: 63806ccea66e1b1effa3d68dfa6e26b5.dir
-  size: 1487963
-  nfiles: 6
+- md5: b187a9df1f21ea3adced755b808a9db1.dir
+  size: 1481821
+  nfiles: 5
   path: rds
+  hash: md5
