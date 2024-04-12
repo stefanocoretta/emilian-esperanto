@@ -530,7 +530,7 @@ emilianto %>%
   geom_bar(position = "fill") +
   scale_fill_brewer(type = "div", palette = "PRGn") +
   facet_grid(~ language) +
-  labs(y = "Proportion")
+  labs(y = "Proportion", fill = "Competence\nlevel")
 
 ggsave("./img/competence.png", width = 7, height = 5)
 ```

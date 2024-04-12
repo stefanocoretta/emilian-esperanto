@@ -1357,14 +1357,8 @@
     },
     "gmp": {
       "Package": "gmp",
-      "Version": "0.7-1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods"
-      ],
-      "Hash": "2381309e05cfc9d3bf86d23b5f54f5a5"
+      "Version": "0.7-4",
+      "Source": "Repository"
     },
     "googledrive": {
       "Package": "googledrive",
@@ -2944,15 +2938,8 @@
     },
     "terra": {
       "Package": "terra",
-      "Version": "1.7-29",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "methods"
-      ],
-      "Hash": "89c24bf35c961e047df79dde2eb69224"
+      "Version": "1.7-71",
+      "Source": "Repository"
     },
     "testthat": {
       "Package": "testthat",

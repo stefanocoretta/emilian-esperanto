@@ -208,7 +208,7 @@ mca_dim1 %>%
   geom_point() +
   scale_color_manual(values = c("#a6611a", "#dfc27d", "darkgrey", "#80cdc1", "#018571")) +
   labs(
-    x = "Dimension 1 score",
+    x = "Dimension 1 (language attitudes)",
     y = "Qualities",
     colour = "Likert score",
     size = "Likert score"

@@ -129,7 +129,8 @@ conditions <- expand.grid(
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
 ubm_cond_sp <- conditional_effects(comprehend_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
-plot(ubm_cond_sp, facet_args = list(ncol = 4))
+plot(ubm_cond_sp, facet_args = list(ncol = 4))[[1]] +
+  labs(fill = "Comprehension\nlevel", colour = "Compresion\nlevel", x = "Proportion of spaces")
 
 ggsave("img/compr-brm-sp.png")
 ```
@@ -143,7 +144,8 @@ conditions <- expand.grid(
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
 ubm_cond_dim <- conditional_effects(comprehend_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
-plot(ubm_cond_dim, facet_args = list(ncol = 5))
+plot(ubm_cond_dim, facet_args = list(ncol = 5))[[1]] +
+  labs(fill = "Comprehension\nlevel", colour =  "Comprehension\nlevel", x = "Dimension 1 (language attitudes)")
 
 ggsave("img/compr-brm-dim.png")
 ```
@@ -180,7 +182,8 @@ conditions <- expand.grid(
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
 sbm_cond_sp <- conditional_effects(speak_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
-plot(sbm_cond_sp, facet_args = list(ncol = 4))
+plot(sbm_cond_sp, facet_args = list(ncol = 4))[[1]] +
+  labs(fill = "Speaking\nlevel", colour = "Speaking\nlevel", x = "Proportion of spaces")
 
 ggsave("img/speak-brm-sp.png")
 ```
@@ -194,7 +197,8 @@ conditions <- expand.grid(
 rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond__)
 
 sbm_cond_dim <- conditional_effects(speak_bm, effects = "dim_1", categorical = TRUE, conditions = conditions)
-plot(sbm_cond_dim, facet_args = list(ncol = 5))
+plot(sbm_cond_dim, facet_args = list(ncol = 5))[[1]] +
+  labs(fill = "Speaking\nlevel",  colour = "Speaking\nlevel", x = "Dimension 1 (language attitudes)")
 
 ggsave("img/speak-brm-dim.png")
 ```
@@ -223,7 +227,9 @@ rw_bm
 
 
 ```{r rw-bm-cond}
-conditional_effects(rw_bm, effects = "spaces_prop:dim_1")
+plot(conditional_effects(rw_bm, effects = "spaces_prop:dim_1"))[[1]] +
+  labs(fill = "Read-write\nlevel", colour = "Read-write\nlevel", x = "Proportion of spaces")
+
 ggsave("img/rw-brm-spaces.png")
 conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 ```
