@@ -130,9 +130,10 @@ rownames(conditions) <- unite(conditions, "cond__", everything()) %>% pull(cond_
 
 ubm_cond_sp <- conditional_effects(comprehend_bm, effects = "spaces_prop", categorical = TRUE, conditions = conditions)
 plot(ubm_cond_sp, facet_args = list(ncol = 4))[[1]] +
-  labs(fill = "Comprehension\nlevel", colour = "Compresion\nlevel", x = "Proportion of spaces")
+  labs(fill = "Comprehension\nlevel", colour =  "Comprehension\nlevel", x = "Dimension 1 (language attitudes)")
 
-ggsave("img/compr-brm-sp.png")
+
+ggsave("img/compr-brm-sp.png", width = 7, height = 4)
 ```
 
 ```{r ubm-cond-dim}
@@ -147,7 +148,7 @@ ubm_cond_dim <- conditional_effects(comprehend_bm, effects = "dim_1", categorica
 plot(ubm_cond_dim, facet_args = list(ncol = 5))[[1]] +
   labs(fill = "Comprehension\nlevel", colour =  "Comprehension\nlevel", x = "Dimension 1 (language attitudes)")
 
-ggsave("img/compr-brm-dim.png")
+ggsave("img/compr-brm-dim.png", width = 7, height = 4)
 ```
 
 
@@ -185,7 +186,7 @@ sbm_cond_sp <- conditional_effects(speak_bm, effects = "spaces_prop", categorica
 plot(sbm_cond_sp, facet_args = list(ncol = 4))[[1]] +
   labs(fill = "Speaking\nlevel", colour = "Speaking\nlevel", x = "Proportion of spaces")
 
-ggsave("img/speak-brm-sp.png")
+ggsave("img/speak-brm-sp.png", width = 7, height = 4)
 ```
 
 ```{r sbm-cond-dim}
@@ -200,7 +201,7 @@ sbm_cond_dim <- conditional_effects(speak_bm, effects = "dim_1", categorical = T
 plot(sbm_cond_dim, facet_args = list(ncol = 5))[[1]] +
   labs(fill = "Speaking\nlevel",  colour = "Speaking\nlevel", x = "Dimension 1 (language attitudes)")
 
-ggsave("img/speak-brm-dim.png")
+ggsave("img/speak-brm-dim.png", width = 7, height = 4)
 ```
 
 
@@ -230,7 +231,7 @@ rw_bm
 plot(conditional_effects(rw_bm, effects = "spaces_prop:dim_1"))[[1]] +
   labs(fill = "Read-write\nlevel", colour = "Read-write\nlevel", x = "Proportion of spaces")
 
-ggsave("img/rw-brm-spaces.png")
+ggsave("img/rw-brm-spaces.png", width = 7, height = 4)
 conditional_effects(rw_bm, effects = "dim_1:spaces_prop")
 ```
 
