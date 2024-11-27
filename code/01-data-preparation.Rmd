@@ -54,8 +54,14 @@ emilianto <- bind_rows(
   
   #### Refactor and recode columns ####
   mutate(
-    # Fix coding error MD+ > MD
+    # Fix coding errors
     languages_family = ifelse(languages_family == "MD+", "MD", languages_family),
+    education = case_when(
+      education %in% c("Bachelor's", "Bachelor's Degree") ~ "Bachelor",
+      education %in% c("Master's or higher", "Master's or more") ~ "Masters+",
+      education %in% c("Primary/Middle School", "Primary/Middle school") ~ "Primary/Middle",
+      education %in% c("Secondary School", "Secondary school") ~ "Secondary"
+    ),
     # Refactor comprehend and speak
     comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
