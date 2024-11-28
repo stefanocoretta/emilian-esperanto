@@ -62,6 +62,16 @@ emilianto <- bind_rows(
       education %in% c("Primary/Middle School", "Primary/Middle school") ~ "Primary/Middle",
       education %in% c("Secondary School", "Secondary school") ~ "Secondary"
     ),
+    # New variables
+    profession_skill = case_when(
+      profession %in% c("ISCO-ELE", "ISCO-ELEM", "ISCO-LAB", "ISCO-CRA", "ISCO-AGR", "ISCO-SER", "ISCO-CLE") ~ "skill_2",
+      profession == "ISCO-TEC" ~ "skill_3",
+      profession %in% c("ISCO-PRO", "ISCO-MAN") ~ "skill_4",
+      profession == "ISCO-ARM" ~ "skill_armed",
+      profession %in% c("RETIRED", "Retired") ~ "skill_retired",
+      profession == "STUDENT" ~ "skill_student",
+      profession == "NOTIW" ~ "skill_niw"
+    ),
     # Refactor comprehend and speak
     comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
