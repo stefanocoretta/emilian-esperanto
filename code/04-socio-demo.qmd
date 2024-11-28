@@ -1,0 +1,96 @@
+---
+title: "Socio-demografics"
+author: "Stefano Coretta"
+format: html
+---
+
+## Setup and read data
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(ggalluvial)
+library(brms)
+```
+
+```{r}
+#| label: read-data
+
+emilianto <- readRDS("data/rds/emilianto.rds")
+emilian <- emilianto |> filter(language == "Emilian")
+```
+
+## Data checks
+
+```{r}
+emilian |> count(gender)
+emilian |> count(education)
+emilian |> count(profession_skill)
+range(emilian$age)
+```
+
+```{r}
+#| label: speak
+
+emilian |> count(speak_2)
+```
+
+## Plotting
+
+```{r}
+emilian |> 
+  ggplot(aes(education, fill = speak_2)) +
+  geom_bar()
+emilian |> 
+  ggplot(aes(education, fill = speak_2)) +
+  geom_bar(position = "fill")
+```
+
+```{r}
+emilian |> 
+  ggplot(aes(gender, fill = speak_2)) +
+  geom_bar()
+emilian |> 
+  ggplot(aes(gender, fill = speak_2)) +
+  geom_bar(position = "fill")
+```
+
+```{r}
+emilian |> 
+  ggplot(aes(profession_skill, fill = speak_2)) +
+  geom_bar()
+emilian |> 
+  ggplot(aes(profession_skill, fill = speak_2)) +
+  geom_bar(position = "fill")
+```
+
+```{r}
+emilian |> 
+  count(gender, education, profession_skill) |> 
+  ggplot(aes(axis1 = education, axis2 = profession_skill, y = n)) +
+  geom_alluvium(aes(fill = gender)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("Education", "Profession"), expand = c(.2, .05))
+```
+
+```{r}
+emilian |> 
+  mutate(
+    speak_bin = case_when(
+      speak_2 == "not at all" ~ "no",
+      speak_2 %in% c("a little", "so and so") ~ "low",
+      speak_2 %in% c("well", "very well") ~ "high"
+    )
+  ) |> 
+  count(gender, education, profession_skill, speak_bin) |> 
+  ggplot(aes(axis1 = education, axis2 = gender, axis3 = profession_skill, y = n)) +
+  geom_alluvium(aes(fill = speak_bin)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("Education", "Gender", "Profession"), expand = c(.2, .05))
+```
+
