@@ -62,6 +62,7 @@ emilianto <- bind_rows(
       education %in% c("Primary/Middle School", "Primary/Middle school") ~ "Primary/Middle",
       education %in% c("Secondary School", "Secondary school") ~ "Secondary"
     ),
+    education = factor(education, levels = c("Primary/Middle", "Secondary", "Bachelor", "Masters+")),
     # New variables
     profession_skill = case_when(
       profession %in% c("ISCO-ELE", "ISCO-ELEM", "ISCO-LAB", "ISCO-CRA", "ISCO-AGR", "ISCO-SER", "ISCO-CLE") ~ "skill_2",
@@ -72,6 +73,14 @@ emilianto <- bind_rows(
       profession == "STUDENT" ~ "skill_student",
       profession == "NOTIW" ~ "skill_niw"
     ),
+    speak_2 = case_when(
+      speak == "NO" ~ "not at all",
+      speak == "AL" ~ "a little",
+      speak == "50/50" ~ "so and so",
+      speak == "G" ~ "well",
+      speak == "VG" ~ "very well"
+    ),
+    speak_2 = factor(speak_2, levels = c("not at all", "a little", "so and so", "well", "very well")),
     # Refactor comprehend and speak
     comprehend = ordered(comprehend, levels = c("NO", "AL", "50/50", "G", "VG")),
     speak = ordered(speak, levels = c("NO", "AL", "50/50", "G", "VG")),
