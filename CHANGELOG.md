@@ -1,3 +1,7 @@
+# 2024-11-27
+
+- Fixed coding of education (e1f2307).
+
 # 2023-12-02
 
 - Prepare repo for submission.
